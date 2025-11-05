@@ -1,39 +1,36 @@
-import { Header } from "./modules/header.js";
-import { Parallax } from "./modules/parallax.js";
-import { FormHandler } from "./modules/form-handler.js";
-import { LazyLoading } from "./modules/lazy-loading.js";
-import { Analytics } from "./modules/analytics.js";
-import { ScrollManager } from "./modules/scroll-manager.js";
-import { WebPSupport } from "./modules/webp-support.js";
+import { MobileMenu } from './modules/mobile-menu.js';
 
-// Main Application
-class App {
-    constructor() {
-        this.modules = [];
-        this.init();
-    }
+// Инициализация при полной загрузке DOM
+document.addEventListener('DOMContentLoaded', function() {
+  initMobileMenu();
+  // Здесь будут другие инициализации
+});
 
-    init() {
-        // Инициализация всех модулей
-        this.modules = [
-            new WebPSupport(),
-            // new Header(),
-            // new ScrollManager(),
-            // new Parallax(),
-            // new FormHandler(),
-            // new LazyLoading(),
-            // new Analytics(),
-        ];
-
-        this.modules.forEach(module => {
-            if (typeof module.init === "function") {
-                module.init();
-            }
-        });
-    }
+/**
+ * Инициализация мобильного меню
+ */
+function initMobileMenu() {
+  try {
+    const mobileMenu = new MobileMenu();
+    
+    // Можно слушать кастомные события для аналитики
+    window.addEventListener('mobileMenu:open', () => {
+      console.log('Мобильное меню открыто');
+      // Здесь можно добавить отправку в аналитику
+    });
+    
+    window.addEventListener('mobileMenu:close', () => {
+      console.log('Мобильное меню закрыто');
+      // Здесь можно добавить отправку в аналитику
+    });
+    
+    // Делаем доступным глобально для отладки
+    window.mobileMenu = mobileMenu;
+    
+  } catch (error) {
+    console.error('Ошибка инициализации мобильного меню:', error);
+  }
 }
 
-// Запуск при полной загрузке DOM
-document.addEventListener("DOMContentLoaded", () => {
-    new App();
-});
+// Экспорт для использования в других модулях (если понадобится)
+export { initMobileMenu };

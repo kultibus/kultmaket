@@ -93,6 +93,8 @@ icons copy.scss
 header copy.js
 
 src/favicons/old
+js.md
+git-cheat-sheet.md
 
 # ===============================
 # Gulp специфичные
