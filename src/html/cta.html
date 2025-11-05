@@ -1,0 +1,59 @@
+<section class="cta" id="contacts" data-lp>
+    <div class="container">
+        <div class="cta__content">
+            <h2 class="section-title">Готовы обсудить ваш проект?</h2>
+            <p class="cta__text">
+                Оставьте заявку, и ваш персональный менеджер свяжется с вами для
+                бесплатной консультации и расчёта стоимости.
+            </p>
+        </div>
+
+        <form class="contact-form" id="contact-form">
+            <div class="form-group">
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Имя"
+                    required
+                    data-validation="name"
+                    class="form-input"
+                />
+                <div class="form-error" data-error="name"></div>
+            </div>
+
+            <div class="form-group">
+                <input
+                    type="tel"
+                    name="phone"
+                    placeholder="Телефон"
+                    required
+                    data-validation="phone"
+                    class="form-input"
+                />
+                <div class="form-error" data-error="phone"></div>
+            </div>
+
+            <div class="form-agreement">
+                <label class="checkbox">
+                    <input type="checkbox" name="agreement" required />
+                    <span class="checkbox__checkmark"></span>
+                    <span class="checkbox__text">
+                        Нажимая кнопку, вы соглашаетесь с
+                        <a href="/privacy.html">политикой конфиденциальности</a>
+                    </span>
+                </label>
+                <div class="form-error" data-error="agreement"></div>
+            </div>
+
+            <button
+                type="submit"
+                class="btn btn--primary btn--block"
+                data-analytics="form-submit"
+            >
+                Отправить запрос
+            </button>
+
+            <div class="form-message"></div>
+        </form>
+    </div>
+</section>

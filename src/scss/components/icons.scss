@@ -1,0 +1,31 @@
+@use "utils/variables" as *;
+@use "utils/mixins" as *;
+
+.icon {
+    @include icon-base;
+
+    // Модификаторы размеров
+    &--xs {
+        @include icon-base(16px);
+    }
+
+    &--sm {
+        @include icon-base(20px);
+    }
+
+    &--md {
+        @include icon-base(24px);
+    }
+
+    &--lg {
+        @include icon-base(32px);
+    }
+
+    &--xl {
+        @include icon-base(48px);
+    }
+
+    &--xxl {
+        @include icon-base(64px);
+    }
+}

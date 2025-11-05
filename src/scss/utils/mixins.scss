@@ -1,0 +1,132 @@
+@use "variables" as *;
+
+// Media Queries
+@mixin mobile {
+    @media (min-width: $breakpoint-mobile) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: $breakpoint-tablet) {
+        @content;
+    }
+}
+
+@mixin laptop {
+    @media (min-width: $breakpoint-laptop) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: $breakpoint-desktop) {
+        @content;
+    }
+}
+
+// Hover
+
+@mixin hover {
+    @media (any-hover: hover) {
+        &:hover {
+            @content;
+        }
+    }
+}
+
+// Контейнер
+@mixin container {
+    max-width: $container-max-width;
+    margin: 0 auto;
+    padding: 0 $container-padding;
+
+    @include tablet {
+        padding: 0 $container-padding-tablet;
+    }
+}
+
+// Кнопки
+@mixin button-reset {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+// Typography
+@mixin heading-1 {
+    // font-family: $font-heading;
+    font-size: $font-size-4xl;
+    font-weight: 700;
+    // line-height: $line-height-tight;
+
+    @include tablet {
+        font-size: $font-size-5xl;
+    }
+
+    @include laptop {
+        font-size: $font-size-6xl;
+    }
+}
+
+@mixin heading-2 {
+    // font-family: $font-heading;
+    font-size: $font-size-3xl;
+    // font-weight: 600;
+    // line-height: $line-height-tight;
+
+    @include tablet {
+        font-size: $font-size-4xl;
+    }
+}
+
+// Flexbox
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+// Icons
+
+// Базовый миксин для иконок
+@mixin icon-base($size: 24px) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: $size;
+    height: $size;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    shape-rendering: geometricPrecision;
+    text-rendering: optimizeLegibility;
+
+    svg {
+        width: 100%;
+        height: 100%;
+        fill: currentColor;
+        display: block;
+    }
+}
+
+// Миксин для создания иконок с разными состояниями
+@mixin icon-color($color, $hover-color: null) {
+    color: $color;
+
+    @if $hover-color {
+        @include hover {
+            color: $hover-color;
+            @content;
+            // transform: translateY(-2px);
+            // box-shadow: 0 4px 12px rgba($color-accent, 0.3);
+        }
+    }
+}

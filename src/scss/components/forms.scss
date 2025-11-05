@@ -1,0 +1,124 @@
+@use "sass:color";
+
+@use "utils/variables" as *;
+@use "utils/mixins" as *;
+
+.contact-form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: $spacing-lg;
+}
+
+.form-input {
+    width: 100%;
+    padding: $spacing-md $spacing-lg;
+    border: 2px solid rgba($color-primary, 0.1);
+    border-radius: 8px;
+    font-size: $font-size-base;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background: $color-white;
+
+    &:focus {
+        outline: none;
+        border-color: $color-accent;
+        box-shadow: 0 0 0 3px rgba($color-accent, 0.1);
+    }
+
+    &.invalid {
+        border-color: $color-error;
+    }
+
+    &::placeholder {
+        color: $color-text-light;
+    }
+}
+
+.form-error {
+    color: $color-error;
+    font-size: $font-size-sm;
+    margin-top: $spacing-xs;
+    min-height: 1.2em;
+}
+
+.form-agreement {
+    margin: $spacing-xl 0;
+}
+
+.checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-sm;
+    cursor: pointer;
+    font-size: $font-size-sm;
+    color: $color-text-light;
+}
+
+.checkbox__checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba($color-primary, 0.2);
+    border-radius: 4px;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 1px;
+        width: 6px;
+        height: 10px;
+        border: solid $color-white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+}
+
+.checkbox input {
+    display: none;
+
+    &:checked + .checkbox__checkmark {
+        background: $color-accent;
+        border-color: $color-accent;
+
+        &::after {
+            opacity: 1;
+        }
+    }
+}
+
+.checkbox__text a {
+    color: $color-accent;
+    text-decoration: underline;
+
+    @include hover {
+        background-color: color.scale($color-accent, $lightness: -10%);
+    }
+}
+
+.form-message {
+    padding: $spacing-md;
+    border-radius: 8px;
+    margin-top: $spacing-lg;
+    text-align: center;
+    font-weight: 500;
+
+    &--success {
+        background: rgba($color-success, 0.1);
+        color: $color-success;
+        border: 1px solid rgba($color-success, 0.3);
+    }
+
+    &--error {
+        background: rgba($color-error, 0.1);
+        color: $color-error;
+        border: 1px solid rgba($color-error, 0.3);
+    }
+}

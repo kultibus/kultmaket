@@ -1,0 +1,65 @@
+@use "utils/variables" as *;
+@use "utils/mixins" as *;
+
+.advantages {
+    padding: $spacing-4xl 0;
+    background: $color-light-bg;
+}
+
+.advantages__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+
+    @include tablet {
+        grid-template-columns: repeat(2, 1fr);
+        gap: $spacing-xl;
+    }
+
+    @include laptop {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.advantage-card {
+    background: $color-white;
+    padding: $spacing-2xl;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba($color-primary, 0.08);
+    text-align: center;
+    transition: all 0.3s ease;
+
+    @include hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba($color-primary, 0.12);
+    }
+}
+
+.advantage-card__icon {
+    width: 64px;
+    height: 64px;
+    @include flex-center;
+    background: linear-gradient(135deg, $color-accent, $color-accent-secondary);
+    border-radius: 16px;
+    margin: 0 auto $spacing-lg;
+
+    .icon {
+        color: $color-white;
+    }
+}
+
+.advantage-card__title {
+    font-size: $font-size-lg;
+    font-weight: 600;
+    color: $color-primary;
+    margin-bottom: $spacing-md;
+
+    @include tablet {
+        font-size: $font-size-xl;
+    }
+}
+
+.advantage-card__text {
+    color: $color-text-light;
+    line-height: $line-height-relaxed;
+}

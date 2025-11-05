@@ -1,0 +1,94 @@
+// Цветовая палитра
+$color-primary: #0a1a2f !default;
+$color-secondary: #2d3747 !default;
+$color-accent: #00cec9 !default;
+$color-accent-secondary: #ff7b47 !default;
+$color-white: #ffffff !default;
+$color-light-bg: #f8f9fa !default;
+$color-text: #2d3747 !default;
+$color-text-light: #6c757d !default;
+
+// Дополнительные цвета
+$color-success: #28a745 !default;
+$color-error: #dc3545 !default;
+$color-warning: #ffc107 !default;
+
+// Шрифты
+$font-heading: "Playfair Display", serif !default;
+$font-body: "Merriweather", serif !default;
+
+// $font-heading: "Bebas Neue Cyrillic", sans-serif !default;
+// $font-heading: "Cormorant", serif !default;
+// $font-heading: "Montserrat", sans-serif !default;
+// $font-heading: "Oswald", sans-serif !default;
+// $font-body: "NotoSans", sans-serif !default;
+// $font-body: "Source Sans 3", sans-serif !default;
+// $font-body: "Open Sans", sans-serif !default;
+// $font-body: "Alegreya Sans", sans-serif !default;
+
+// Размеры шрифтов
+$font-size-xs: 0.75rem !default;
+$font-size-sm: 0.875rem !default;
+$font-size-base: 1rem !default;
+$font-size-lg: 1.125rem !default;
+$font-size-xl: 1.25rem !default;
+$font-size-2xl: 1.5rem !default;
+$font-size-3xl: 1.875rem !default;
+$font-size-4xl: 2.25rem !default;
+$font-size-5xl: 3rem !default;
+$font-size-6xl: 3.75rem !default;
+
+// Межстрочные интервалы
+$line-height-tight: 1.25 !default;
+$line-height-normal: 1.5 !default;
+$line-height-relaxed: 1.75 !default;
+
+// Breakpoints (mobile-first)
+// $breakpoint-mobile: 320px !default;
+$breakpoint-mobile: 425px !default;
+$breakpoint-tablet: 768px !default;
+$breakpoint-laptop: 1024px !default;
+$breakpoint-desktop: 1440px !default;
+
+// Spacing система
+$spacing-xs: 0.25rem !default;
+$spacing-sm: 0.5rem !default;
+$spacing-md: 1rem !default;
+$spacing-lg: 1.5rem !default;
+$spacing-xl: 2rem !default;
+$spacing-2xl: 3rem !default;
+$spacing-3xl: 4rem !default;
+$spacing-4xl: 6rem !default;
+
+// Контейнер
+$container-max-width: 1200px !default;
+$container-padding: $spacing-md !default;
+$container-padding-tablet: $spacing-xl !default;
+
+// Хедер
+
+$header-height: 95px;
+$header-scroll: 80px;
+$header-height-mobile: 70px;
+$header-scroll-mobile: 56px;
+
+// Логотип
+
+$logo-breakpoints: (
+    mobile: 140px,
+    tablet: 160px,
+    desktop: 180px,
+);
+
+// Иконки
+
+$icon-colors: (
+    "color-primary": $color-primary,
+    "color-secondary": $color-secondary,
+    "color-accent": $color-accent,
+    "color-accent-secondary": $color-accent-secondary,
+    "color-white": $color-white,
+    "color-light-bg": $color-light-bg,
+    "color-text": $color-text,
+    "color-text-light": $color-text-light,
+) !default;

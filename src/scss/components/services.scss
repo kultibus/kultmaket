@@ -1,0 +1,59 @@
+@use "utils/variables" as *;
+@use "utils/mixins" as *;
+
+.services {
+	// position: relative;
+	background-color: $color-white;
+    padding: $spacing-4xl 0;
+}
+
+.services__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+
+    @include tablet {
+        grid-template-columns: repeat(2, 1fr);
+        gap: $spacing-xl;
+    }
+}
+
+.service-card {
+    background: $color-white;
+    padding: $spacing-2xl;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba($color-primary, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+
+    @include hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba($color-primary, 0.15);
+        border-color: $color-accent;
+    }
+}
+
+.service-card__icon {
+    width: 64px;
+    height: 64px;
+    @include flex-center;
+    background: linear-gradient(135deg, $color-accent, $color-accent-secondary);
+    border-radius: 16px;
+    margin-bottom: $spacing-lg;
+
+    .icon {
+        color: $color-white;
+    }
+}
+
+.service-card__title {
+    font-size: $font-size-xl;
+    font-weight: 600;
+    color: $color-primary;
+    margin-bottom: $spacing-md;
+}
+
+.service-card__text {
+    color: $color-text-light;
+    line-height: $line-height-relaxed;
+}
