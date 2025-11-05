@@ -1,78 +1,36 @@
-// app.js
-import { Header } from './modules/header.js';
-import { Parallax } from './modules/parallax.js';
-import { ScrollManager } from './modules/scroll-manager.js';
-import { WebPSupport } from './modules/webp-support.js';
+import { MobileMenu } from './modules/mobile-menu.js';
 
-export class App {
-  constructor() {
-    this.modules = new Map();
-    this.config = {
-      debug: process.env.NODE_ENV === 'development'
-    };
-  }
+// Инициализация при полной загрузке DOM
+document.addEventListener('DOMContentLoaded', function() {
+  initMobileMenu();
+  // Здесь будут другие инициализации
+});
 
-  async init() {
-    try {
-      await this.initializeModules();
-      this.log('App initialized successfully');
-    } catch (error) {
-      this.error('App initialization failed:', error);
-    }
-  }
-
-  async initializeModules() {
-    const moduleDefinitions = [
-      { key: 'webp', class: WebPSupport, priority: 1 },
-      { key: 'header', class: Header, priority: 2 },
-      { key: 'scroll', class: ScrollManager, priority: 3 },
-      { key: 'parallax', class: Parallax, priority: 4 }
-    ];
-
-    // Сортируем по приоритету
-    moduleDefinitions.sort((a, b) => a.priority - b.priority);
-
-    for (const { key, Class, options } of moduleDefinitions) {
-      try {
-        const instance = new Class(options);
-        if (typeof instance.init === 'function') {
-          await instance.init();
-          this.modules.set(key, instance);
-          this.log(`Module "${key}" initialized`);
-        }
-      } catch (error) {
-        this.error(`Failed to initialize module "${key}":`, error);
-      }
-    }
-  }
-
-  getModule(key) {
-    return this.modules.get(key);
-  }
-
-  log(...args) {
-    if (this.config.debug) {
-      console.log('[App]', ...args);
-    }
-  }
-
-  error(...args) {
-    console.error('[App]', ...args);
-  }
-
-  destroy() {
-    this.modules.forEach((module, key) => {
-      if (typeof module.destroy === 'function') {
-        module.destroy();
-        this.log(`Module "${key}" destroyed`);
-      }
+/**
+ * Инициализация мобильного меню
+ */
+function initMobileMenu() {
+  try {
+    const mobileMenu = new MobileMenu();
+    
+    // Можно слушать кастомные события для аналитики
+    window.addEventListener('mobileMenu:open', () => {
+      console.log('Мобильное меню открыто');
+      // Здесь можно добавить отправку в аналитику
     });
-    this.modules.clear();
+    
+    window.addEventListener('mobileMenu:close', () => {
+      console.log('Мобильное меню закрыто');
+      // Здесь можно добавить отправку в аналитику
+    });
+    
+    // Делаем доступным глобально для отладки
+    window.mobileMenu = mobileMenu;
+    
+  } catch (error) {
+    console.error('Ошибка инициализации мобильного меню:', error);
   }
 }
 
-// Запуск приложения
-document.addEventListener('DOMContentLoaded', () => {
-  window.app = new App();
-  window.app.init();
-});
+// Экспорт для использования в других модулях (если понадобится)
+export { initMobileMenu };
