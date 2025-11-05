@@ -93,3 +93,14 @@ icons copy.scss
 header copy.js
 
 src/favicons/old
+
+# ===============================
+# Gulp специфичные
+# ===============================
+.gulp/
+gulpfile.js/.cache/
+*.tmp
+.gulp-local.json
+gulpfile.local.js
+gulp-config.local.json
+.env.gulp
