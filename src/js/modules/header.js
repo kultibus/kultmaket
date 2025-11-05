@@ -1,151 +1,177 @@
-export class Header {
-    constructor() {
-        this.burger = document.querySelector(".burger");
-        this.nav = document.querySelector(".nav");
-        this.body = document.body;
-        this.isOpen = false;
-        this.scrollbarWidth = 0;
-        this.fixedElements = [];
-        this.lpElements = [];
+export class Header extends BaseModule {
+  constructor() {
+    super();
+    this.selectors = {
+      burger: '.burger',
+      nav: '.nav',
+      navLink: '.nav__link',
+      anchorLink: 'a[href^="#"]',
+      fixedElement: '[data-lp-fixed]',
+      lpElement: '[data-lp]'
+    };
+    
+    this.state = {
+      isOpen: false,
+      scrollbarWidth: 0
+    };
+  }
+
+  init() {
+    if (this.isInitialized) return;
+
+    this.elements = this.initializeElements();
+    if (!this.elements.burger || !this.elements.nav) return;
+
+    this.calculateScrollbarWidth();
+    this.setupEventListeners();
+    this.setupResizeObserver();
+    
+    this.isInitialized = true;
+  }
+
+  initializeElements() {
+    const elements = {};
+    
+    Object.keys(this.selectors).forEach(key => {
+      const selector = this.selectors[key];
+      if (key === 'navLink' || key === 'anchorLink' || key === 'fixedElement' || key === 'lpElement') {
+        elements[key] = this.safeQuerySelectorAll(selector);
+      } else {
+        elements[key] = this.safeQuerySelector(selector);
+      }
+    });
+
+    return elements;
+  }
+
+  setupEventListeners() {
+    const { burger, navLink, anchorLink } = this.elements;
+
+    // Бургер меню
+    burger.addEventListener('click', () => this.toggleMenu());
+
+    // Закрытие меню при клике на ссылку
+    navLink.forEach(link => {
+      link.addEventListener('click', () => this.closeMenu());
+    });
+
+    // Плавная прокрутка
+    anchorLink.forEach(link => {
+      link.addEventListener('click', (e) => this.handleAnchorClick(e, link));
+    });
+
+    // Закрытие при клике вне меню
+    document.addEventListener('click', (e) => this.handleOutsideClick(e));
+
+    // Закрытие по ESC
+    document.addEventListener('keydown', (e) => this.handleEscapeKey(e));
+  }
+
+  setupResizeObserver() {
+    if ('ResizeObserver' in window) {
+      this.resizeObserver = new ResizeObserver(
+        this.debounce(() => this.calculateScrollbarWidth(), 250)
+      );
+      this.resizeObserver.observe(document.body);
+    } else {
+      window.addEventListener('resize', 
+        this.debounce(() => this.calculateScrollbarWidth(), 250)
+      );
     }
+  }
 
-    init() {
-        this.calculateScrollbarWidth();
-        this.addEventListeners();
+  calculateScrollbarWidth() {
+    this.state.scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    this.applyScrollbarCompensation();
+  }
 
-        // Пересчитываем при ресайзе
-        window.addEventListener("resize", () => this.calculateScrollbarWidth());
+  applyScrollbarCompensation() {
+    const { fixedElement, lpElement } = this.elements;
+    const { scrollbarWidth } = this.state;
 
-        // this.body.style.paddingRight = `-${this.scrollbarWidth}px`;
-        // this.body.style.paddingRight = `${this.scrollbarWidth}px`;
+    document.body.style.marginRight = `-${scrollbarWidth}px`;
 
-        this.fixedElements = document.querySelectorAll("[data-lp-fixed]");
-        this.lpElements = document.querySelectorAll("[data-lp]");
-        this.body.style.marginRight = `-${this.scrollbarWidth}px`;
+    lpElement.forEach(element => {
+      element.style.paddingRight = `${scrollbarWidth}px`;
+    });
+  }
 
-        if (this.lpElements.length) {
-            this.lpElements.forEach(element => {
-                element.style.paddingRight = `${this.scrollbarWidth}px`;
-            });
-        }
+  handleAnchorClick(e, link) {
+    const href = link.getAttribute('href');
+    if (href === '#') return;
+
+    e.preventDefault();
+    const target = this.safeQuerySelector(href);
+    
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+      this.closeMenu();
     }
+  }
 
-    // Вычисляем точную ширину скроллбара
-    calculateScrollbarWidth() {
-        const scrollbarWidth =
-            window.innerWidth - document.documentElement.clientWidth;
-        // document.documentElement.style.setProperty(
-        //     "--scrollbar-width",
-        //     `${scrollbarWidth}px`
-        // );
-        this.scrollbarWidth = scrollbarWidth;
+  handleOutsideClick(e) {
+    const { nav, burger } = this.elements;
+    const { isOpen } = this.state;
+
+    if (isOpen && !nav.contains(e.target) && !burger.contains(e.target)) {
+      this.closeMenu();
     }
+  }
 
-    addEventListeners() {
-        // Бургер меню
-        if (this.burger) {
-            this.burger.addEventListener("click", () => this.toggleMenu());
-        }
-
-        // Закрытие меню при клике на ссылку
-        document.querySelectorAll(".nav__link").forEach(link => {
-            link.addEventListener("click", () => this.closeMenu());
-        });
-
-        // Закрытие при клике вне меню
-        document.addEventListener("click", e => {
-            if (
-                this.isOpen &&
-                !this.nav.contains(e.target) &&
-                !this.burger.contains(e.target)
-            ) {
-                this.closeMenu();
-            }
-        });
-
-        // Закрытие по ESC
-        document.addEventListener("keydown", e => {
-            if (e.key === "Escape" && this.isOpen) {
-                this.closeMenu();
-            }
-        });
-
-        // Скролл
-
-        // Плавная прокрутка для якорных ссылок
-        document.querySelectorAll('a[href^="#"]').forEach(link => {
-            link.addEventListener("click", e => {
-                const href = link.getAttribute("href");
-                if (href !== "#") {
-                    e.preventDefault();
-                    const target = document.querySelector(href);
-                    if (target) {
-                        target.scrollIntoView({ behavior: "smooth" });
-                        this.closeMenu();
-                    }
-                }
-            });
-        });
+  handleEscapeKey(e) {
+    if (e.key === 'Escape' && this.state.isOpen) {
+      this.closeMenu();
     }
+  }
 
-    toggleMenu() {
-        this.isOpen ? this.closeMenu() : this.openMenu();
-        console.log(this.containers);
+  toggleMenu() {
+    this.state.isOpen ? this.closeMenu() : this.openMenu();
+  }
+
+  openMenu() {
+    const { burger, nav, fixedElement } = this.elements;
+    const { scrollbarWidth } = this.state;
+
+    this.state.isOpen = true;
+    document.body.classList.add('locked');
+    document.body.style.marginRight = '0px';
+
+    fixedElement.forEach(element => {
+      element.style.paddingRight = `${scrollbarWidth}px`;
+    });
+
+    burger.classList.add('active');
+    nav.classList.add('active');
+    
+    // ARIA атрибуты
+    burger.setAttribute('aria-expanded', 'true');
+    nav.setAttribute('aria-hidden', 'false');
+  }
+
+  closeMenu() {
+    const { burger, nav, fixedElement } = this.elements;
+    const { scrollbarWidth } = this.state;
+
+    this.state.isOpen = false;
+    burger.classList.remove('active');
+    nav.classList.remove('active');
+    
+    document.body.classList.remove('locked');
+    document.body.style.marginRight = `-${scrollbarWidth}px`;
+
+    fixedElement.forEach(element => {
+      element.style.paddingRight = '0px';
+    });
+
+    // ARIA атрибуты
+    burger.setAttribute('aria-expanded', 'false');
+    nav.setAttribute('aria-hidden', 'true');
+  }
+
+  destroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
     }
-
-    openMenu() {
-        this.isOpen = true;
-
-        this.body.classList.add("locked");
-        // this.body.style.paddingRight = `${this.scrollbarWidth}px`;
-        this.body.style.marginRight = "0px";
-
-        if (this.fixedElements.length) {
-            this.fixedElements.forEach(element => {
-                element.style.paddingRight = `${this.scrollbarWidth}px`;
-            });
-        }
-
-        // if (this.lpElements.length) {
-        //     this.lpElements.forEach(element => {
-        //         element.style.paddingRight = `${this.scrollbarWidth * 2}px`;
-        //     });
-        // }
-
-        // Открываем меню
-        this.burger.classList.add("active");
-        this.nav.classList.add("active");
-
-        // Обновляем ARIA атрибуты
-        // this.burger.setAttribute("aria-expanded", "true");
-        // this.nav.setAttribute("aria-hidden", "false");
-    }
-
-    closeMenu() {
-        this.isOpen = false;
-
-        // Закрываем меню
-        this.burger.classList.remove("active");
-        this.nav.classList.remove("active");
-
-        // Разблокируем скролл
-        this.body.classList.remove("locked");
-        this.body.style.marginRight = `-${this.scrollbarWidth}px`;
-
-        if (this.fixedElements.length) {
-            this.fixedElements.forEach(element => {
-                element.style.paddingRight = "0px";
-            });
-        }
-
-        // if (this.lpElements.length) {
-        //     this.lpElements.forEach(element => {
-        //         element.style.paddingRight = `${this.scrollbarWidth}px`;
-        //     });
-        // }
-
-        // Обновляем ARIA атрибуты
-        // this.burger.setAttribute("aria-expanded", "false");
-        // this.nav.setAttribute("aria-hidden", "true");
-    }
+    super.destroy();
+  }
 }

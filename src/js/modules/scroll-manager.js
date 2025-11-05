@@ -1,101 +1,99 @@
-export class ScrollManager {
-    constructor() {
-        this.body = document.body;
-        this.lastScrollY = 0;
-        this.scrollThreshold = 100; // px
-        this.ticking = false;
-        this.isScrolled = false; // Флаг состояния
+export class ScrollManager extends BaseModule {
+  constructor(options = {}) {
+    super();
+    this.options = {
+      threshold: 100,
+      throttleDelay: 16,
+      ...options
+    };
 
-        this.init();
+    this.state = {
+      lastScrollY: 0,
+      isScrolled: false,
+      ticking: false
+    };
+  }
+
+  init() {
+    if (this.isInitialized) return;
+
+    this.resetScrollState();
+    this.setupScrollListener();
+    this.setupLoadListener();
+    
+    this.isInitialized = true;
+  }
+
+  setupScrollListener() {
+    const throttledHandler = this.throttle(
+      () => this.handleScroll(), 
+      this.options.throttleDelay
+    );
+    
+    window.addEventListener('scroll', throttledHandler, { passive: true });
+  }
+
+  setupLoadListener() {
+    window.addEventListener('load', () => this.checkScrollState());
+  }
+
+  handleScroll() {
+    if (!this.state.ticking) {
+      requestAnimationFrame(() => this.updateScrollState());
+      this.state.ticking = true;
+    }
+  }
+
+  updateScrollState() {
+    const currentScrollY = window.pageYOffset;
+    const scrollDirection = currentScrollY > this.state.lastScrollY ? 'down' : 'up';
+    const shouldBeScrolled = this.shouldAddScrollClass(currentScrollY, scrollDirection);
+
+    if (shouldBeScrolled !== this.state.isScrolled) {
+      this.toggleScrollClass(shouldBeScrolled);
+      this.state.isScrolled = shouldBeScrolled;
     }
 
-    init() {
-        // Принудительно убираем класс scroll при инициализации
-        this.body.classList.remove("scroll");
-        this.isScrolled = false;
+    this.state.lastScrollY = currentScrollY;
+    this.state.ticking = false;
+  }
 
-        // Добавить обработчик скролла
-        window.addEventListener("scroll", () => this.handleScroll(), {
-            passive: true,
-        });
+  shouldAddScrollClass(currentScrollY, scrollDirection) {
+    return scrollDirection === 'down' && currentScrollY > this.options.threshold;
+  }
 
-        // Принудительно убираем класс scroll после полной загрузки страницы
-        window.addEventListener("load", () => {
-            this.body.classList.remove("scroll");
-            this.isScrolled = false;
-        });
+  toggleScrollClass(shouldAdd) {
+    document.body.classList.toggle('scroll', shouldAdd);
+  }
+
+  checkScrollState() {
+    const currentScrollY = window.pageYOffset;
+    const shouldBeScrolled = currentScrollY > this.options.threshold;
+
+    if (shouldBeScrolled !== this.state.isScrolled) {
+      this.toggleScrollClass(shouldBeScrolled);
+      this.state.isScrolled = shouldBeScrolled;
     }
 
-    handleScroll() {
-        if (!this.ticking) {
-            requestAnimationFrame(() => this.updateScrollState());
-            this.ticking = true;
-        }
-    }
+    this.state.lastScrollY = currentScrollY;
+  }
 
-    updateScrollState() {
-        const currentScrollY =
-            window.pageYOffset || document.documentElement.scrollTop;
-        const scrollDirection =
-            currentScrollY > this.lastScrollY ? "down" : "up";
+  setThreshold(threshold) {
+    this.options.threshold = threshold;
+    this.checkScrollState();
+  }
 
-        // Добавляем класс при скролле вниз после порога
-        if (
-            scrollDirection === "down" &&
-            currentScrollY > this.scrollThreshold
-        ) {
-            if (!this.isScrolled) {
-                this.body.classList.add("scroll");
-                this.isScrolled = true;
-            }
-        }
-        // Убираем класс при скролле вверх (независимо от позиции)
-        else if (scrollDirection === "up") {
-            if (this.isScrolled) {
-                this.body.classList.remove("scroll");
-                this.isScrolled = false;
-            }
-        }
+  resetScrollState() {
+    document.body.classList.remove('scroll');
+    this.state = {
+      lastScrollY: 0,
+      isScrolled: false,
+      ticking: false
+    };
+  }
 
-        this.lastScrollY = currentScrollY;
-        this.ticking = false;
-    }
-
-    // Публичный метод для принудительной проверки состояния
-    checkScrollState() {
-        const currentScrollY =
-            window.pageYOffset || document.documentElement.scrollTop;
-
-        // Принудительно обновляем состояние based on current position
-        if (currentScrollY > this.scrollThreshold) {
-            this.body.classList.add("scroll");
-            this.isScrolled = true;
-        } else {
-            this.body.classList.remove("scroll");
-            this.isScrolled = false;
-        }
-
-        this.lastScrollY = currentScrollY;
-    }
-
-    // Публичный метод для изменения порога
-    setThreshold(threshold) {
-        this.scrollThreshold = threshold;
-        this.checkScrollState();
-    }
-
-    // Публичный метод для принудительного сброса состояния
-    resetScrollState() {
-        this.body.classList.remove("scroll");
-        this.isScrolled = false;
-        this.lastScrollY = 0;
-    }
-
-    // Уничтожение экземпляра
-    destroy() {
-        window.removeEventListener("scroll", () => this.handleScroll());
-        window.removeEventListener("load", () => this.checkScrollState());
-        this.body.classList.remove("scroll");
-        this.isScrolled = false;
-    }
+  destroy() {
+    this.resetScrollState();
+    super.destroy();
+  }
 }
