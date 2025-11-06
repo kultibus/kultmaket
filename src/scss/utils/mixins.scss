@@ -130,3 +130,40 @@
         }
     }
 }
+
+// Overlay
+
+@mixin overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba($color-primary, 0.8);
+    backdrop-filter: blur(4px);
+}
+
+// Scrollbar
+
+@mixin scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba($color-primary, 0.3) transparent;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+        border-radius: 0 12px 12px 0;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba($color-primary, 0.3);
+        border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: rgba($color-primary, 0.5);
+    }
+}

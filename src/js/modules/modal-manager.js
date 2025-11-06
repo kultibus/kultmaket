@@ -83,7 +83,7 @@ export class ModalManager {
 }
 
 // Инициализация
-const modalManager = new ModalManager();
+// const modalManager = new ModalManager();
 
 // Экспорт для использования в других модулях (если нужно)
-export default modalManager;
+// export default modalManager;

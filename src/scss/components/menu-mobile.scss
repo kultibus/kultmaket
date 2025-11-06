@@ -1,0 +1,107 @@
+@use "utils/variables" as *;
+@use "utils/mixins" as *;
+
+.menu-mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    // transition: all 0.3s ease;
+
+    .menu-opened & {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    @include laptop {
+        display: none;
+    }
+
+    &__overlay-test {
+        @include overlay;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+
+        .menu-opened & {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .menu-closed & {
+            opacity: 0;
+        }
+    }
+
+    &__container {
+        position: absolute;
+        top: $header-height-mobile;
+        height: calc(100vh - $header-height-mobile);
+        right: 0;
+        background: $color-white;
+        width: 100%;
+        max-width: $breakpoint-mobile;
+        overflow-y: auto;
+        padding: $spacing-xl;
+        @include flex-center;
+        justify-content: start;
+        flex-direction: column;
+        gap: $spacing-lg;
+
+        @include tablet {
+            top: $header-height;
+            height: calc(100vh - $header-height);
+            .btn {
+                display: none;
+            }
+        }
+
+        .menu-opened & {
+            animation: menuSlideIn 0.3s ease;
+        }
+
+        .modal-closed & {
+            animation: menuSlideOut 0.3s ease;
+        }
+
+        .scrolling & {
+            top: $header-scroll-mobile;
+            height: calc(100vh - $header-scroll-mobile);
+
+            @include tablet {
+                top: $header-scroll;
+                height: calc(100vh - $header-scroll);
+            }
+        }
+    }
+
+    &__list {
+        list-style: none;
+        gap: $spacing-lg;
+        @include flex-center;
+        flex-direction: column;
+    }
+}
+
+// Анимации
+@keyframes menuSlideIn {
+    from {
+        transform: translateX(100%) scaleX(0);
+    }
+    to {
+        transform: translateX(0) scaleX(1);
+    }
+}
+
+@keyframes menuSlideOut {
+    from {
+        transform: translateY(0) scale(1);
+    }
+    to {
+        transform: translateX(100%) scaleX(0);
+    }
+}

@@ -3,10 +3,8 @@ import { ModalManager } from "./modules/modal-manager.js";
 
 // Инициализация при полной загрузке DOM
 document.addEventListener("DOMContentLoaded", function () {
-    initMobileMenu();
-
-    const modalManager = new ModalManager();
-
+    // initMobileMenu();
+    // const modalManager = new ModalManager();
     // Здесь будут другие инициализации
 });
 
@@ -37,3 +35,9 @@ function initMobileMenu() {
 
 // Экспорт для использования в других модулях (если понадобится)
 export { initMobileMenu };
+
+function toggleClass() {
+    document.body.classList.toggle("menu-opened");
+}
+
+document.querySelector(".burger").addEventListener("click", toggleClass);

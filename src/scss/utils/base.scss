@@ -123,6 +123,33 @@ img {
     }
 }
 
+// Links
+
+.menu-link {
+    font-weight: 500;
+    color: $color-text;
+    position: relative;
+    transition: color 0.3s ease;
+
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: $color-accent;
+        transition: width 0.3s ease;
+    }
+
+    @include hover {
+        color: $color-accent;
+        &::after {
+            width: 100%;
+        }
+    }
+}
+
 // Utility classes
 .text-center {
     text-align: center;

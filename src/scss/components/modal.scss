@@ -7,7 +7,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1000;
+    z-index: 1001;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
@@ -18,16 +18,9 @@
     }
 
     &__overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba($color-primary, 0.8);
-        backdrop-filter: blur(4px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        @include overlay;
+        @include flex-center;
+
         padding: $spacing-md;
 
         @include tablet {
@@ -50,6 +43,9 @@
         max-height: 90vh;
         overflow-y: auto;
         animation: modalSlideIn 0.3s ease;
+
+        // Улучшение скролла для модального окна
+        @include scrollbar;
 
         @include tablet {
             max-width: 600px;
@@ -80,10 +76,6 @@
         &:focus-visible {
             outline: 2px solid $color-accent;
             outline-offset: 2px;
-        }
-
-        .icon {
-            // @include icon-base(40px);
         }
     }
 
@@ -131,30 +123,6 @@
         &:focus {
             background: $color-white;
             border-color: $color-accent;
-        }
-    }
-
-    // Улучшение скролла для модального окна
-    &__container {
-        scrollbar-width: thin;
-        scrollbar-color: rgba($color-primary, 0.3) transparent;
-
-        &::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background: transparent;
-            border-radius: 0 12px 12px 0;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background: rgba($color-primary, 0.3);
-            border-radius: 3px;
-        }
-
-        &::-webkit-scrollbar-thumb:hover {
-            background: rgba($color-primary, 0.5);
         }
     }
 }
