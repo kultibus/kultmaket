@@ -53,15 +53,13 @@
             flex: 0 0 auto;
 
             .btn {
-                padding: $spacing-sm $spacing-lg;
+                padding: $spacing-md $spacing-lg;
                 font-size: $font-size-sm;
             }
         }
 
         @include laptop {
-            flex-direction: column;
-            align-items: flex-end;
-            gap: $spacing-xs;
+            gap: $spacing-md;
         }
     }
 }
@@ -88,15 +86,14 @@
 
     &__icon {
         @include icon-base();
-        width: map.get($logo-breakpoints, mobile);
+        width: map.get($logo-breakpoints, tablet);
         height: auto;
         color: $color-text-light;
 
-        @include tablet {
-            width: map.get($logo-breakpoints, tablet);
-        }
-
         @include laptop {
+            width: map.get($logo-breakpoints, laptop);
+        }
+        @include desktop {
             width: map.get($logo-breakpoints, desktop);
         }
     }
@@ -132,7 +129,7 @@
     flex-direction: column;
     z-index: 1001;
 
-    &.active {
+    .menu-open & {
         overflow-y: auto;
         transform: translateX(0) scaleX(1);
         opacity: 1;
@@ -197,8 +194,12 @@
         @include laptop {
             flex-direction: row;
             align-items: center;
-            gap: $spacing-xl;
+            gap: $spacing-md;
             margin-bottom: 0;
+        }
+
+        @include desktop {
+            gap: $spacing-lg;
         }
     }
 
@@ -275,7 +276,7 @@
         }
     }
 
-    &.active {
+    .menu-open & {
         .burger__line:nth-child(1) {
             transform: rotate(-45deg) translate(-6px, 5px);
         }
