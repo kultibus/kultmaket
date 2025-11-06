@@ -129,7 +129,7 @@
     flex-direction: column;
     z-index: 1001;
 
-    .menu-open & {
+    .menu-opened & {
         overflow-y: auto;
         transform: translateX(0) scaleX(1);
         opacity: 1;
@@ -167,8 +167,8 @@
     }
 
     @include laptop {
-        flex-direction: row;
         position: relative;
+        flex-direction: row;
         top: 0;
         height: 100%;
         border: none;
@@ -183,6 +183,10 @@
             display: none;
         }
     }
+
+	&__overlay {
+
+	}
 
     &__list {
         list-style: none;
@@ -276,7 +280,7 @@
         }
     }
 
-    .menu-open & {
+    .menu-opened & {
         .burger__line:nth-child(1) {
             transform: rotate(-45deg) translate(-6px, 5px);
         }

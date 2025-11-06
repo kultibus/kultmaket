@@ -18,23 +18,35 @@
             </a>
 
             <nav class="menu">
+                <div class="menu__overlay" data-menu-overlay></div>
+
                 <ul class="menu__list">
                     <li class="menu__item">
-                        <a href="#hero" class="menu__link">Главная</a>
+                        <a href="#hero" class="menu__link" data-menu-close
+                            >Главная</a
+                        >
                     </li>
                     <li class="menu__item">
-                        <a href="#process" class="menu__link">Как работаем</a>
+                        <a href="#process" class="menu__link" data-menu-close
+                            >Как работаем</a
+                        >
                     </li>
                     <li class="menu__item">
-                        <a href="#services" class="menu__link">Услуги</a>
+                        <a href="#services" class="menu__link" data-menu-close
+                            >Услуги</a
+                        >
                     </li>
                     <li class="menu__item">
-                        <a href="#portfolio" class="menu__link">Портфолио</a>
+                        <a href="#portfolio" class="menu__link" data-menu-close
+                            >Портфолио</a
+                        >
                     </li>
                 </ul>
 
                 <button
                     class="btn btn--primary btn--sm"
+                    data-modal-form-open
+                    data-menu-close
                     data-analytics="header-order"
                 >
                     Заказать расчёт
@@ -53,13 +65,15 @@
 
                 <button
                     class="btn btn--primary btn--sm"
+                    data-modal-form-open
+                    data-menu-close
                     data-analytics="header-order"
                 >
                     Заказать расчёт
                 </button>
             </div>
 
-            <button class="burger" aria-label="Открыть меню">
+            <button class="burger" data-menu-toggle aria-label="Открыть меню">
                 <span class="burger__line"></span>
                 <span class="burger__line"></span>
                 <span class="burger__line"></span>

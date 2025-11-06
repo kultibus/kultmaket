@@ -12,7 +12,7 @@ export class MobileMenu {
         this.classes = {
             active: "active",
             locked: "locked",
-            menuOpen: "menu-open",
+            menuOpen: "menu-opened",
             scrollCompensated: "scroll-compensated",
         };
 
