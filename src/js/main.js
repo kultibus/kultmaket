@@ -1,43 +1,57 @@
-import { MobileMenu } from "./modules/mobile-menu.js";
-import { ModalManager } from "./modules/modal-manager.js";
+import EventBus from "./modules/event-bus.js";
+import ScrollLock from "./modules/scroll-lock.js";
+import NavManager from "./modules/nav-manager.js";
+import ModalManager from "./modules/modal-manager.js";
+import WebPDetector from "./modules/webp-detector.js";
+import PerformanceOptimizer from "./modules/performance.js";
 
-// Инициализация при полной загрузке DOM
-document.addEventListener("DOMContentLoaded", function () {
-    // initMobileMenu();
-    // const modalManager = new ModalManager();
-    // Здесь будут другие инициализации
-});
+class App {
+    constructor() {
+        this.modules = new Map();
+        this.init();
+    }
 
-/**
- * Инициализация мобильного меню
- */
-function initMobileMenu() {
-    try {
-        const mobileMenu = new MobileMenu();
+    init() {
+        document.addEventListener("DOMContentLoaded", () => {
+            try {
+                this.initializeModules();
+                this.bindGlobalEvents();
+            } catch (error) {
+                console.error("Failed to initialize app:", error);
+            }
+        });
+    }
 
-        // Можно слушать кастомные события для аналитики
-        window.addEventListener("mobileMenu:open", () => {
-            console.log("Мобильное меню открыто");
-            // Здесь можно добавить отправку в аналитику
+    initializeModules() {
+        // Инициализация модулей
+        this.modules.set("scrollLock", new ScrollLock());
+        this.modules.set("navManager", new NavManager());
+        this.modules.set("modalManager", new ModalManager());
+        this.modules.set("webpDetector", new WebPDetector());
+        this.modules.set("performance", new PerformanceOptimizer());
+
+        console.log("All modules initialized successfully");
+    }
+
+    bindGlobalEvents() {
+        // Глобальные обработчики событий
+        EventBus.on("module:error", error => {
+            console.error("Module error:", error);
         });
 
-        window.addEventListener("mobileMenu:close", () => {
-            console.log("Мобильное меню закрыто");
-            // Здесь можно добавить отправку в аналитику
+        // Обновление ширины скроллбара при ресайзе
+        EventBus.on("window:resize", () => {
+            const scrollLock = this.modules.get("scrollLock");
+            if (scrollLock) {
+                scrollLock.updateScrollbarWidth();
+            }
         });
+    }
 
-        // Делаем доступным глобально для отладки
-        window.mobileMenu = mobileMenu;
-    } catch (error) {
-        console.error("Ошибка инициализации мобильного меню:", error);
+    getModule(name) {
+        return this.modules.get(name);
     }
 }
 
-// Экспорт для использования в других модулях (если понадобится)
-export { initMobileMenu };
-
-function toggleClass() {
-    document.body.classList.toggle("menu-opened");
-}
-
-document.querySelector(".burger").addEventListener("click", toggleClass);
+// Инициализация приложения
+new App();
