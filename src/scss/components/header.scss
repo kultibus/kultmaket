@@ -18,7 +18,7 @@
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     z-index: 1000;
 
-    .scrolling & {
+    .scroll-down & {
         background-color: rgba($color-white, 0.75);
         box-shadow: 0 2px 20px rgba($color-primary, 0.1);
     }
@@ -35,7 +35,7 @@
             height: $header-height;
         }
 
-        .scrolling & {
+        .scroll-down & {
             height: $header-scroll-mobile;
             @include tablet {
                 height: $header-scroll;

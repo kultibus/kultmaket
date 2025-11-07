@@ -10,7 +10,7 @@
     z-index: 999;
     opacity: 0;
     visibility: hidden;
-    // transition: all 0.3s ease;
+    transition: transform 0.3s ease;
 
     .menu-opened & {
         opacity: 1;
@@ -21,7 +21,7 @@
         display: none;
     }
 
-    &__overlay-test {
+    &__overlay {
         @include overlay;
         opacity: 0;
         visibility: hidden;
@@ -30,10 +30,6 @@
         .menu-opened & {
             opacity: 1;
             visibility: visible;
-        }
-
-        .menu-closed & {
-            opacity: 0;
         }
     }
 
@@ -51,6 +47,7 @@
         justify-content: start;
         flex-direction: column;
         gap: $spacing-lg;
+        animation: menuSlideOut 0.3s ease;
 
         @include tablet {
             top: $header-height;
@@ -64,19 +61,19 @@
             animation: menuSlideIn 0.3s ease;
         }
 
-        .modal-closed & {
+        .menu-closed & {
             animation: menuSlideOut 0.3s ease;
         }
 
-        .scrolling & {
-            top: $header-scroll-mobile;
-            height: calc(100vh - $header-scroll-mobile);
+        // .scroll-down & {
+        //     top: $header-scroll-mobile;
+        //     height: calc(100vh - $header-scroll-mobile);
 
-            @include tablet {
-                top: $header-scroll;
-                height: calc(100vh - $header-scroll);
-            }
-        }
+        //     @include tablet {
+        //         top: $header-scroll;
+        //         height: calc(100vh - $header-scroll);
+        //     }
+        // }
     }
 
     &__list {

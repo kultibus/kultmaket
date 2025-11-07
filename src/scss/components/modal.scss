@@ -12,7 +12,7 @@
     visibility: hidden;
     transition: all 0.3s ease;
 
-    .modal-opened & {
+    &.active {
         opacity: 1;
         visibility: visible;
     }
@@ -28,7 +28,7 @@
         }
 
         // Состояния для анимации закрытия
-        .modal-closed & {
+        .active & {
             opacity: 0;
         }
     }
@@ -52,7 +52,7 @@
         }
 
         // Состояния для анимации закрытия
-        .modal-closed & {
+        .active & {
             animation: modalSlideOut 0.3s ease;
         }
     }
