@@ -3,18 +3,18 @@
 // Media Queries
 
 @mixin mobile {
-    @media (min-width: #{$breakpoint-mobile}) and (max-width: #{$breakpoint-tablet - 1}) {
+    @media (max-width: #{$breakpoint-tablet - 1}) {
         @content;
     }
 }
 
 @mixin tablet {
-    @media (min-width: #{$breakpoint-tablet}) and (max-width: #{$breakpoint-laptop - 1}) {
+    @media (min-width: #{$breakpoint-tablet}) {
         @content;
     }
 }
 @mixin laptop {
-    @media (min-width: #{$breakpoint-laptop}) and (max-width: #{$breakpoint-desktop - 1}) {
+    @media (min-width: #{$breakpoint-laptop}) {
         @content;
     }
 }
