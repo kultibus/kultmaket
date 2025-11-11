@@ -14,6 +14,17 @@ global.app = {
     plugins: plugins,
 };
 
+const plumberConfig = {
+    errorHandler: function (err) {
+        console.log("\x1b[31m%s\x1b[0m", "❌ Error:"); // Красный цвет
+        console.log(err.toString());
+        this.emit("end");
+    },
+};
+
+// Сделаем доступным глобально
+global.plumberConfig = plumberConfig;
+
 // Импорт задач
 import { copy } from "./gulp/tasks/copy.js";
 import { reset } from "./gulp/tasks/reset.js";
@@ -22,7 +33,7 @@ import { server } from "./gulp/tasks/server.js";
 import { scss } from "./gulp/tasks/scss.js";
 import { js } from "./gulp/tasks/js.js";
 import { images } from "./gulp/tasks/images.js";
-import { copyFonts, fonstStyle } from "./gulp/tasks/fonts.js";
+import { copyFonts, fontsStyle } from "./gulp/tasks/fonts.js";
 import { copyFavicons } from "./gulp/tasks/favicons.js";
 import { svgSprite } from "./gulp/tasks/svgSprite.js";
 
@@ -40,7 +51,7 @@ function watcher() {
 }
 
 // Последовательная обработака шрифтов
-const fonts = gulp.series(copyFonts, fonstStyle);
+const fonts = gulp.series(copyFonts, fontsStyle);
 
 const favicons = gulp.parallel(copyFavicons);
 

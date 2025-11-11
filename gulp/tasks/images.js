@@ -8,6 +8,7 @@ export const images = () => {
 
     const processImages = app.gulp
         .src(src.images, { encoding: false })
+        .pipe(app.plugins.plumber(plumberConfig))
         .pipe(newer(build.images))
         .pipe(app.gulp.dest(build.images))
         .pipe(webp())
@@ -28,6 +29,7 @@ export const images = () => {
 
     const processSVG = app.gulp
         .src(src.svg)
+        .pipe(app.plugins.plumber(plumberConfig))
         .pipe(newer(build.images))
         .pipe(
             gulpIf(
