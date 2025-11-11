@@ -5,5 +5,9 @@ export const server = done => {
         },
         notify: false,
         port: 3000,
+        // Добавьте эти опции:
+        open: true, // не открывать браузер автоматически
+        reloadDelay: 100, // задержка перед перезагрузкой
+        injectChanges: true, // инжект изменений вместо полной перезагрузки
     });
 };

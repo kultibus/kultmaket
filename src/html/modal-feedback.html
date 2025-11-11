@@ -1,0 +1,85 @@
+<!-- <div class="modal" id="modal-feedback" aria-hidden="true" inert> -->
+<div class="modal" id="modal-feedback">
+    <div class="modal__overlay">
+        <div
+            class="modal__container"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+            data-modal-container
+        >
+            <button
+                class="modal__close"
+                type="button"
+                data-modal-close
+                aria-label="Закрыть модальное окно"
+            >
+                <span class="icon icon--md" aria-hidden="true">
+                    <svg width="24" height="24" focusable="false">
+                        <use href="img/sprite.svg#phone"></use>
+                    </svg>
+                </span>
+            </button>
+
+            <div class="modal__content">
+                <h2 class="modal__title" id="modal-title">
+                    Готовы обсудить ваш проект?
+                </h2>
+                <p class="modal__subtitle">
+                    Оставьте заявку, и ваш персональный менеджер свяжется с вами
+                    для бесплатной консультации и расчёта стоимости.
+                </p>
+
+                <form class="contact-form" id="modal-contact-form">
+                    <div class="form-group">
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Имя"
+                            required
+                            data-validation="name"
+                            class="form-input"
+                        />
+                        <div class="form-error" data-error="name"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <input
+                            type="tel"
+                            name="phone"
+                            placeholder="Телефон"
+                            required
+                            data-validation="phone"
+                            class="form-input"
+                        />
+                        <div class="form-error" data-error="phone"></div>
+                    </div>
+
+                    <div class="form-agreement">
+                        <label class="checkbox">
+                            <input type="checkbox" name="agreement" required />
+                            <span class="checkbox__checkmark"></span>
+                            <span class="checkbox__text">
+                                Нажимая кнопку, вы соглашаетесь с
+                                <a href="/privacy.html"
+                                    >политикой конфиденциальности</a
+                                >
+                            </span>
+                        </label>
+                        <div class="form-error" data-error="agreement"></div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn--primary btn--block"
+                        data-analytics="modal-form-submit"
+                    >
+                        Отправить запрос
+                    </button>
+
+                    <div class="form-message"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

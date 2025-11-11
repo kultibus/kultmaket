@@ -15,10 +15,10 @@
     background-color: rgba($color-white, 0.95);
     backdrop-filter: blur(5px);
     border-bottom: 1px solid rgba($color-primary, 0.1);
-    z-index: 1000;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1000;
 
-    .scroll & {
+    .scroll-down & {
         background-color: rgba($color-white, 0.75);
         box-shadow: 0 2px 20px rgba($color-primary, 0.1);
     }
@@ -35,7 +35,7 @@
             height: $header-height;
         }
 
-        .scroll & {
+        .scroll-down & {
             height: $header-scroll-mobile;
             @include tablet {
                 height: $header-scroll;
@@ -80,9 +80,11 @@
 }
 
 .logo {
-    display: inline-flex;
-    align-items: center;
-    transition: all 0.3s ease;
+    &__link {
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
 
     &__icon {
         @include icon-base();
@@ -115,72 +117,83 @@
 .menu {
     position: absolute;
     top: $header-height-mobile;
-    right: 0;
-    height: calc(100vh - $header-height-mobile);
+    left: 0;
     width: 100%;
-    background: $color-white;
-    border-top: 1px solid rgba($color-primary, 0.1);
-    transform: translateX(100%) scaleX(0);
+    height: calc(100vh - $header-height-mobile);
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
-    padding: $spacing-lg;
-    display: flex;
-    flex-direction: column;
-    z-index: 1001;
 
-    .menu-open & {
-        overflow-y: auto;
-        transform: translateX(0) scaleX(1);
+    .menu-opened & {
         opacity: 1;
         visibility: visible;
     }
 
-    .scroll & {
+    .scroll-down & {
         top: $header-scroll-mobile;
         height: calc(100vh - $header-scroll-mobile);
-
-        @include tablet {
-            top: $header-scroll;
-            height: calc(100vh - $header-scroll);
-        }
-
-        @include laptop {
-            top: 0;
-            height: 100%;
-        }
-    }
-
-    @include mobile {
-        width: auto;
-        min-width: 300px;
     }
 
     @include tablet {
         top: $header-height;
-        padding: $spacing-lg $spacing-3xl;
         height: calc(100vh - $header-height);
-
-        .btn {
-            display: none;
-        }
     }
 
     @include laptop {
-        flex-direction: row;
         position: relative;
         top: 0;
         height: 100%;
-        border: none;
-        transform: translateX(0);
-        background: transparent;
-        padding: 0;
         opacity: 1;
         visibility: visible;
-        width: auto;
+    }
 
-        .btn {
-            display: none;
+    &__overlay {
+        @include overlay;
+        @include laptop {
+			background: none;
+			backdrop-filter: none;
+
+        }
+    }
+
+    &__container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: rgba($color-white, 0.95);
+        width: 100%;
+        height: 100%;
+        max-width: $breakpoint-mobile;
+        overflow-y: auto;
+        padding: $spacing-xl;
+        @include flex-center;
+        justify-content: start;
+        flex-direction: column;
+        gap: $spacing-lg;
+        animation: menuSlideOut 0.3s ease;
+        @include scrollbar;
+
+        @include tablet {
+            .btn {
+                display: none;
+            }
+        }
+
+        @include laptop {
+            background-color: transparent;
+            flex-direction: row;
+            padding: 0;
+            justify-content: center;
+            gap: 0;
+            max-width: none;
+            animation: none;
+        }
+
+        .menu-opened & {
+            animation: menuSlideIn 0.3s ease;
+            @include laptop {
+                animation: none;
+            }
         }
     }
 
@@ -189,42 +202,15 @@
         gap: $spacing-lg;
         @include flex-center;
         flex-direction: column;
-        margin-bottom: $spacing-lg;
 
         @include laptop {
             flex-direction: row;
-            align-items: center;
             gap: $spacing-md;
-            margin-bottom: 0;
+            @include flex-between;
         }
 
         @include desktop {
             gap: $spacing-lg;
-        }
-    }
-
-    &__link {
-        font-weight: 500;
-        color: $color-text;
-        position: relative;
-        transition: color 0.3s ease;
-
-        &::after {
-            content: "";
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: $color-accent;
-            transition: width 0.3s ease;
-        }
-
-        @include hover {
-            color: $color-accent;
-            &::after {
-                width: 100%;
-            }
         }
     }
 }
@@ -276,7 +262,7 @@
         }
     }
 
-    .menu-open & {
+    .menu-opened & {
         .burger__line:nth-child(1) {
             transform: rotate(-45deg) translate(-6px, 5px);
         }
@@ -288,5 +274,24 @@
         .burger__line:nth-child(3) {
             transform: rotate(45deg) translate(-6px, -5px);
         }
+    }
+}
+
+// Анимации
+@keyframes menuSlideIn {
+    from {
+        transform: translateX(100%) scaleX(0);
+    }
+    to {
+        transform: translateX(0) scaleX(1);
+    }
+}
+
+@keyframes menuSlideOut {
+    from {
+        transform: translateY(0) scale(1);
+    }
+    to {
+        transform: translateX(100%) scaleX(0);
     }
 }

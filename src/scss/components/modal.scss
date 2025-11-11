@@ -1,0 +1,151 @@
+@use "utils/variables" as *;
+@use "utils/mixins" as *;
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+
+    &.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &__overlay {
+        @include overlay;
+        @include flex-center;
+
+        padding: $spacing-md;
+
+        @include tablet {
+            padding: $spacing-xl;
+        }
+
+        // Состояния для анимации закрытия
+        .active & {
+            // opacity: 0;
+        }
+    }
+
+    &__container {
+        position: relative;
+        background: $color-white;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba($color-primary, 0.3);
+        width: 100%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        // animation: modalSlideIn 0.3s ease;
+
+        // Улучшение скролла для модального окна
+        @include scrollbar;
+
+        @include tablet {
+            max-width: 600px;
+        }
+
+        // Состояния для анимации закрытия
+        // .active & {
+        //     animation: modalSlideOut 0.3s ease;
+        // }
+    }
+
+    &__close {
+        @include button-reset;
+        position: absolute;
+        top: $spacing-md;
+        right: $spacing-md;
+        z-index: 10;
+        color: $color-text-light;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+
+        @include hover {
+            color: $color-error;
+            background: rgba($color-error, 0.1);
+            transform: rotate(90deg);
+        }
+
+        &:focus-visible {
+            outline: 2px solid $color-accent;
+            outline-offset: 2px;
+        }
+    }
+
+    &__content {
+        padding: $spacing-2xl $spacing-lg;
+
+        @include tablet {
+            padding: $spacing-3xl $spacing-2xl;
+        }
+    }
+
+    &__title {
+        text-align: center;
+        color: $color-primary;
+        margin-bottom: $spacing-md;
+        font-size: $font-size-2xl;
+
+        @include tablet {
+            font-size: $font-size-3xl;
+        }
+    }
+
+    &__subtitle {
+        text-align: center;
+        color: $color-text-light;
+        margin-bottom: $spacing-2xl;
+        font-size: $font-size-base;
+        line-height: $line-height-relaxed;
+
+        @include tablet {
+            font-size: $font-size-lg;
+        }
+    }
+
+    // Адаптация формы для модального окна
+    .contact-form {
+        max-width: none;
+        margin: 0;
+    }
+
+    .form-input {
+        background: $color-light-bg;
+        border-color: rgba($color-primary, 0.1);
+
+        &:focus {
+            background: $color-white;
+            border-color: $color-accent;
+        }
+    }
+}
+
+// Анимации
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes modalSlideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+}

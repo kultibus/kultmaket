@@ -1,17 +1,18 @@
-@use 'fonts/fonts';
+// @use "fonts/fonts";
 
 // utils
-@use 'utils/variables';
-@use 'utils/mixins';
-@use 'utils/base';
+@use "utils/variables";
+@use "utils/mixins";
+@use "utils/base";
 
 // components
-// @use 'components/forms';
-@use 'components/icons';
-@use 'components/buttons';
-@use 'components/header';
-@use 'components/hero';
-@use 'components/process';
+@use "components/forms";
+@use "components/icons";
+@use "components/buttons";
+@use "components/modal";
+@use "components/header";
+@use "components/hero";
+@use "components/process";
 // @use 'components/services';
 // @use 'components/advantages';
 // @use 'components/portfolio';

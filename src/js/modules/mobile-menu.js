@@ -1,278 +1,106 @@
-export class MobileMenu {
-    constructor() {
-        this.selectors = {
-            burger: ".burger",
-            menu: ".menu",
-            overlay: ".menu-overlay",
-            body: "body",
-            lpContainers: ".lp-element", // Постоянная компенсация
-            lp2Containers: ".lp2-element", // Временная компенсация при открытии меню
-        };
+// modules/mobile-menu.js
 
-        this.classes = {
-            active: "active",
-            locked: "locked",
-            menuOpen: "menu-open",
-            scrollCompensated: "scroll-compensated",
-        };
-
-        this.burger = document.querySelector(this.selectors.burger);
-        this.menu = document.querySelector(this.selectors.menu);
-        this.overlay = this.createOverlay();
+class MobileMenu {
+    constructor(scrollManager) {
         this.body = document.body;
-        this.lpContainers = document.querySelectorAll(
-            this.selectors.lpContainers
-        );
-        this.lp2Containers = document.querySelectorAll(
-            this.selectors.lp2Containers
-        );
-
-        this.isOpen = false;
-        this.scrollbarWidth = this.getScrollbarWidth();
-        this.isCompensated = false;
+        this.menuToggle = document.querySelector("[data-menu-toggler]");
+        this.menuClose = document.querySelectorAll("[data-menu-close]");
+        this.menuContainer = document.querySelector("[data-menu-container]");
+        this.breakpointTablet = 768;
+        this.breakpointLaptop = 1024;
+        this.scrollManager = scrollManager;
 
         this.init();
     }
 
     init() {
-        if (!this.burger || !this.menu) {
-            console.warn("MobileMenu: Не найдены необходимые элементы DOM");
-            return;
-        }
-
-        // Инициализируем постоянную компенсацию при загрузке
-        this.initPermanentCompensation();
         this.bindEvents();
-    }
-
-    /**
-     * Получает ширину скроллбара для текущего браузера
-     */
-    getScrollbarWidth() {
-        const outer = document.createElement("div");
-        outer.style.visibility = "hidden";
-        outer.style.overflow = "scroll";
-        outer.style.width = "100px";
-        outer.style.position = "absolute";
-        outer.style.top = "-9999px";
-        document.body.appendChild(outer);
-
-        const inner = document.createElement("div");
-        inner.style.width = "100%";
-        outer.appendChild(inner);
-
-        const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
-        outer.parentNode.removeChild(outer);
-
-        return scrollbarWidth;
-    }
-
-    /**
-     * Инициализация постоянной компенсации скроллбара
-     */
-    initPermanentCompensation() {
-        if (this.scrollbarWidth > 0) {
-            // Добавляем отрицательный margin к body
-            this.body.style.marginRight = `-${this.scrollbarWidth}px`;
-
-            // Добавляем постоянный компенсирующий padding к .lp-element
-            this.lpContainers.forEach(container => {
-                const currentPadding =
-                    window.getComputedStyle(container).paddingRight;
-                const currentPaddingValue = parseFloat(currentPadding) || 0;
-                container.style.paddingRight = `${
-                    currentPaddingValue + this.scrollbarWidth
-                }px`;
-                container.dataset.originalPaddingRight = currentPadding;
-            });
-
-            this.body.classList.add(this.classes.scrollCompensated);
-            this.isCompensated = true;
-
-            console.log(
-                `Permanent scrollbar compensation applied: ${this.scrollbarWidth}px`
-            );
-        }
-    }
-
-    /**
-     * Включаем временную компенсацию при открытии меню
-     */
-    enableTemporaryCompensation() {
-        if (this.scrollbarWidth > 0) {
-            // Убираем отрицательный margin с body
-            this.body.style.marginRight = "0";
-
-            // Добавляем компенсирующий padding к .lp2-element
-            this.lp2Containers.forEach(container => {
-                const currentPadding =
-                    window.getComputedStyle(container).paddingRight;
-                const currentPaddingValue = parseFloat(currentPadding) || 0;
-                container.style.paddingRight = `${
-                    currentPaddingValue + this.scrollbarWidth
-                }px`;
-                container.dataset.tempPaddingRight = currentPadding;
-            });
-
-            this.body.classList.add(this.classes.menuOpen);
-        }
-    }
-
-    /**
-     * Отключаем временную компенсацию при закрытии меню
-     */
-    disableTemporaryCompensation() {
-        if (this.scrollbarWidth > 0) {
-            // Возвращаем отрицательный margin к body
-            this.body.style.marginRight = `-${this.scrollbarWidth}px`;
-
-            // Убираем компенсирующий padding с .lp2-element
-            this.lp2Containers.forEach(container => {
-                const originalPadding = container.dataset.tempPaddingRight;
-                container.style.paddingRight = originalPadding || "";
-                delete container.dataset.tempPaddingRight;
-            });
-
-            this.body.classList.remove(this.classes.menuOpen);
-        }
-    }
-
-    createOverlay() {
-        const overlay = document.createElement("div");
-        overlay.className = "menu-overlay";
-        overlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      z-index: 998;
-    `;
-        document.body.appendChild(overlay);
-        return overlay;
+        this.handleResize(); // Initial check
     }
 
     bindEvents() {
-        // Клик по бургеру
-        this.burger.addEventListener("click", () => this.toggle());
-
-        // Клик по оверлею
-        this.overlay.addEventListener("click", () => this.close());
-
-        // Клик по ссылкам меню (закрытие меню при переходе)
-        this.menu.querySelectorAll("a").forEach(link => {
-            link.addEventListener("click", () => this.close());
-        });
-
-        // Клавиша Escape
-        document.addEventListener("keydown", e => {
-            if (e.key === "Escape" && this.isOpen) {
-                this.close();
-            }
-        });
-
-        // Ресайз окна (закрываем меню при переходе в десктопный режим)
-        window.addEventListener("resize", () => {
-            if (window.innerWidth > 768 && this.isOpen) {
-                this.close();
-            }
-        });
-    }
-
-    toggle() {
-        this.isOpen ? this.close() : this.open();
-    }
-
-    open() {
-        // Включаем временную компенсацию
-        this.enableTemporaryCompensation();
-
-        // Блокируем скролл
-        this.body.classList.add(this.classes.locked);
-
-        // Активируем меню и бургер
-        this.burger.classList.add(this.classes.active);
-        this.menu.classList.add(this.classes.active);
-
-        // Показываем оверлей с анимацией
-        this.overlay.style.visibility = "visible";
-        setTimeout(() => {
-            this.overlay.style.opacity = "1";
-        }, 10);
-
-        this.isOpen = true;
-
-        // Улучшение доступности
-        this.burger.setAttribute("aria-expanded", "true");
-        this.menu.setAttribute("aria-hidden", "false");
-
-        // Событие для аналитики
-        this.dispatchEvent("mobileMenu:open");
-    }
-
-    close() {
-        // Деактивируем меню и бургер
-        this.burger.classList.remove(this.classes.active);
-        this.menu.classList.remove(this.classes.active);
-
-        // Разблокируем скролл
-        this.body.classList.remove(this.classes.locked);
-
-        // Отключаем временную компенсацию
-        this.disableTemporaryCompensation();
-
-        // Скрываем оверлей с анимацией
-        this.overlay.style.opacity = "0";
-        setTimeout(() => {
-            this.overlay.style.visibility = "hidden";
-        }, 300);
-
-        this.isOpen = false;
-
-        // Улучшение доступности
-        this.burger.setAttribute("aria-expanded", "false");
-        this.menu.setAttribute("aria-hidden", "true");
-
-        // Событие для аналитики
-        this.dispatchEvent("mobileMenu:close");
-    }
-
-    dispatchEvent(eventName) {
-        const event = new CustomEvent(eventName, {
-            detail: { isOpen: this.isOpen },
-        });
-        window.dispatchEvent(event);
-    }
-
-    // Публичный метод для внешнего контроля
-    destroy() {
-        // Восстанавливаем оригинальные стили перед уничтожением
-        if (this.isOpen) {
-            this.close();
+        // Toggle menu
+        if (this.menuToggle) {
+            this.menuToggle.addEventListener("click", () => this.toggleMenu());
         }
 
-        // Восстанавливаем оригинальные padding для .lp-element
-        this.lpContainers.forEach(container => {
-            const originalPadding = container.dataset.originalPaddingRight;
-            if (originalPadding !== undefined) {
-                container.style.paddingRight = originalPadding;
-            }
-        });
+        // Close menu on close button
+        if (this.menuClose.length > 0) {
+            this.menuClose.forEach(element =>
+                element.addEventListener("click", () => this.closeMenu())
+            );
+        }
 
-        // Убираем отрицательный margin с body
-        this.body.style.marginRight = "";
+        // Close menu on outside click
+        if (this.menuContainer) {
+            document.addEventListener("click", e => this.handleOutsideClick(e));
+        }
 
-        this.burger.removeEventListener("click", this.toggle);
-        this.overlay.removeEventListener("click", this.close);
-        document.removeEventListener("keydown", this.handleEscape);
-        window.removeEventListener("resize", this.handleResize);
+        // Close menu on ESC
+        document.addEventListener("keydown", e => this.handleEscape(e));
 
-        if (this.overlay && this.overlay.parentNode) {
-            this.overlay.parentNode.removeChild(this.overlay);
+        // Close menu on resize
+        window.addEventListener("resize", () => this.handleResize());
+    }
+
+    toggleMenu() {
+        if (this.body.classList.contains("menu-opened")) {
+            this.closeMenu();
+        } else {
+            this.openMenu();
+        }
+    }
+
+    openMenu() {
+        this.body.classList.add("menu-opened");
+        // Блокируем скролл
+        if (this.scrollManager) {
+            this.scrollManager.lockScroll();
+        }
+    }
+
+    closeMenu() {
+        this.body.classList.remove("menu-opened");
+        // Разблокируем скролл
+        if (this.scrollManager) {
+            this.scrollManager.unlockScroll();
+        }
+    }
+
+    handleOutsideClick(e) {
+        if (
+            this.menuContainer &&
+            !this.menuContainer.contains(e.target) &&
+            this.menuToggle &&
+            !this.menuToggle.contains(e.target) &&
+            this.body.classList.contains("menu-opened")
+        ) {
+            this.closeMenu();
+        }
+    }
+
+    handleEscape(e) {
+        if (e.key === "Escape" && this.body.classList.contains("menu-opened")) {
+            this.closeMenu();
+        }
+    }
+
+    handleResize() {
+        const width = window.innerWidth;
+
+        // Close menu on tablet and larger screens
+        if (
+            width >= this.breakpointTablet &&
+            this.body.classList.contains("menu-opened")
+        ) {
+            this.closeMenu();
+        }
+
+        // Ensure menu is closed on laptop and larger screens
+        if (width >= this.breakpointLaptop) {
+            this.closeMenu();
         }
     }
 }
+
+export default MobileMenu;

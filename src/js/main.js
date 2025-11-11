@@ -1,36 +1,19 @@
-import { MobileMenu } from './modules/mobile-menu.js';
+// main.js
 
-// Инициализация при полной загрузке DOM
-document.addEventListener('DOMContentLoaded', function() {
-  initMobileMenu();
-  // Здесь будут другие инициализации
+import MobileMenu from './modules/mobile-menu.js';
+import Modal from './modules/modal.js';
+import ScrollManager from './modules/scroll-manager.js';
+
+// Инициализация при загрузке DOM
+document.addEventListener('DOMContentLoaded', () => {
+  // Инициализация менеджера скролла
+  const scrollManager = new ScrollManager();
+  
+  // Инициализация мобильного меню с передачей менеджера скролла
+  new MobileMenu(scrollManager);
+  
+  // Инициализация модальных окон с передачей менеджера скролла
+  new Modal(scrollManager);
+  
+  console.log('Application initialized successfully');
 });
-
-/**
- * Инициализация мобильного меню
- */
-function initMobileMenu() {
-  try {
-    const mobileMenu = new MobileMenu();
-    
-    // Можно слушать кастомные события для аналитики
-    window.addEventListener('mobileMenu:open', () => {
-      console.log('Мобильное меню открыто');
-      // Здесь можно добавить отправку в аналитику
-    });
-    
-    window.addEventListener('mobileMenu:close', () => {
-      console.log('Мобильное меню закрыто');
-      // Здесь можно добавить отправку в аналитику
-    });
-    
-    // Делаем доступным глобально для отладки
-    window.mobileMenu = mobileMenu;
-    
-  } catch (error) {
-    console.error('Ошибка инициализации мобильного меню:', error);
-  }
-}
-
-// Экспорт для использования в других модулях (если понадобится)
-export { initMobileMenu };

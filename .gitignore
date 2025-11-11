@@ -81,22 +81,6 @@ service-worker.js
 
 .prettiercache
 
-feautures.md
-sitePrototype.md
-прототип.md
-тз.md
-
-index copy.html
-
-icons copy.scss
-
-header copy.js
-
-src/favicons/old
-js.md
-git-cheat-sheet.md
-git-workflow.md
-
 # ===============================
 # Gulp специфичные
 # ===============================
@@ -107,3 +91,8 @@ gulpfile.js/.cache/
 gulpfile.local.js
 gulp-config.local.json
 .env.gulp
+
+# ===============================
+
+archive/
+docs/
