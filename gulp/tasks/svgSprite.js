@@ -43,6 +43,7 @@ export const svgSprite = () => {
 
     return app.gulp
         .src(app.path.src.svgIcons)
+        .pipe(app.plugins.plumber())
         .pipe(app.plugins.svgSprite(config))
         .pipe(app.gulp.dest(app.path.build.images)); // сохраняем в build/img/
 };

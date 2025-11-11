@@ -14,6 +14,17 @@ global.app = {
     plugins: plugins,
 };
 
+const plumberConfig = {
+    errorHandler: function (err) {
+        console.log("\x1b[31m%s\x1b[0m", "❌ Error:"); // Красный цвет
+        console.log(err.toString());
+        this.emit("end");
+    },
+};
+
+// Сделаем доступным глобально
+global.plumberConfig = plumberConfig;
+
 // Импорт задач
 import { copy } from "./gulp/tasks/copy.js";
 import { reset } from "./gulp/tasks/reset.js";
