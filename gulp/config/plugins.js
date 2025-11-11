@@ -3,6 +3,7 @@ import browserSync from "browser-sync";
 import newer from "gulp-newer";
 import gulpIf from "gulp-if";
 import svgSprite from "gulp-svg-sprite";
+import plumber from "gulp-plumber";
 
 export const plugins = {
     replace: replace,
@@ -10,4 +11,5 @@ export const plugins = {
     newer: newer,
     gulpIf: gulpIf,
     svgSprite: svgSprite,
+    plumber: plumber,
 };

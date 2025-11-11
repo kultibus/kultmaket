@@ -9,15 +9,17 @@
                 </span>
             </a>
 
-            <a href="/" class="logo" aria-label="На главную страницу">
-                <span class="logo__icon" aria-hidden="true">
-                    <svg width="120" height="40" focusable="false">
-                        <use href="img/sprite.svg#logo"></use>
-                    </svg>
-                </span>
-            </a>
+            <div class="logo">
+                <a href="#hero" class="logo__link" aria-label="На главную страницу">
+                    <span class="logo__icon" aria-hidden="true">
+                        <svg width="120" height="40" focusable="false">
+                            <use href="img/sprite.svg#logo"></use>
+                        </svg>
+                    </span>
+                </a>
+            </div>
 
-            <nav class="menu">
+            <!-- <nav class="menu">
                 <ul class="menu__list">
                     <li class="menu__item">
                         <a href="#hero" class="menu__link menu-link">Главная</a>
@@ -38,6 +40,57 @@
                         >
                     </li>
                 </ul>
+            </nav> -->
+
+            <!-- <nav class="menu" data-menu-mobile aria-hidden="true"> -->
+            <nav class="menu">
+                <div class="menu__overlay">
+                    <div class="menu__container" data-menu-container>
+                        <ul class="menu__list">
+                            <li class="menu__item">
+                                <a
+                                    href="#hero"
+                                    class="menu__link menu-link"
+                                    data-menu-close
+                                    >Главная</a
+                                >
+                            </li>
+                            <li class="menu__item">
+                                <a
+                                    href="#process"
+                                    class="menu__link menu-link"
+                                    data-menu-close
+                                    >Как работаем</a
+                                >
+                            </li>
+                            <li class="menu__item">
+                                <a
+                                    href="#services"
+                                    class="menu__link menu-link"
+                                    data-menu-close
+                                    >Услуги</a
+                                >
+                            </li>
+                            <li class="menu__item">
+                                <a
+                                    href="#portfolio"
+                                    class="menu__link menu-link"
+                                    data-menu-close
+                                    >Портфолио</a
+                                >
+                            </li>
+                        </ul>
+
+                        <button
+                            class="btn btn--primary btn--sm"
+                            data-target="#modal-feedback"
+                            data-menu-close
+                            data-analytics="header-order"
+                        >
+                            Заказать расчёт
+                        </button>
+                    </div>
+                </div>
             </nav>
 
             <div class="header__contacts">
@@ -53,13 +106,18 @@
                 <button
                     class="btn btn--primary btn--sm"
                     data-target="#modal-feedback"
+                    data-menu-close
                     data-analytics="header-order"
                 >
                     Заказать расчёт
                 </button>
             </div>
 
-            <button class="burger" data-menu-toggle aria-label="Открыть меню">
+            <button
+                class="burger"
+                data-menu-toggler
+                aria-label="Открыть/закрыть меню"
+            >
                 <span class="burger__line"></span>
                 <span class="burger__line"></span>
                 <span class="burger__line"></span>

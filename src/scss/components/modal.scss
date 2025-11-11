@@ -29,7 +29,7 @@
 
         // Состояния для анимации закрытия
         .active & {
-            opacity: 0;
+            // opacity: 0;
         }
     }
 
@@ -42,7 +42,7 @@
         max-width: 500px;
         max-height: 90vh;
         overflow-y: auto;
-        animation: modalSlideIn 0.3s ease;
+        // animation: modalSlideIn 0.3s ease;
 
         // Улучшение скролла для модального окна
         @include scrollbar;
@@ -52,9 +52,9 @@
         }
 
         // Состояния для анимации закрытия
-        .active & {
-            animation: modalSlideOut 0.3s ease;
-        }
+        // .active & {
+        //     animation: modalSlideOut 0.3s ease;
+        // }
     }
 
     &__close {

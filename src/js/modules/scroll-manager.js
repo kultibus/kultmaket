@@ -1,337 +1,81 @@
-// src/js/modules/scroll-manager.js
-
-/**
- * Менеджер скролла с улучшенной производительностью
- */
-
-import { SCROLL_CONFIG, STATE_CLASSES, DATA_ATTRIBUTES, EVENTS } from '../constants.js';
-import eventBus from '../core/event-bus.js';
-import { DOM, Performance, Events, Helpers } from '../core/utils.js';
+// modules/scroll-manager.js
 
 class ScrollManager {
-  constructor(options = {}) {
-    this.options = {
-      threshold: options.threshold || SCROLL_CONFIG.THRESHOLD,
-      duration: options.duration || SCROLL_CONFIG.DURATION,
-      offset: options.offset || SCROLL_CONFIG.OFFSET,
-      ...options
-    };
+    constructor() {
+        this.body = document.body;
+        this.scrollbarWidth = 0;
+        this.lpElements = document.querySelectorAll('[data-lp]');
+        this.lpFixedElements = document.querySelectorAll('[data-lp-fixed]');
+        this.isLocked = false;
+        
+        this.init();
+    }
 
-    this.lastScrollY = window.pageYOffset;
-    this.direction = null;
-    this.isScrolling = false;
-    this.observer = null;
-    this.stepElements = [];
-    this.anchorLinks = [];
+    init() {
+        this.calculateScrollbarWidth();
+        this.applyInitialCompensation();
+    }
 
-    this.init();
-  }
+    calculateScrollbarWidth() {
+        // Создаем временный элемент для вычисления ширины скроллбара
+        const outer = document.createElement('div');
+        outer.style.visibility = 'hidden';
+        outer.style.overflow = 'scroll';
+        document.body.appendChild(outer);
 
-  /**
-   * Инициализация менеджера скролла
-   */
-  init() {
-    this.findElements();
-    this.setupScrollListener();
-    this.setupAnchorLinks();
-    this.setupIntersectionObserver();
-    this.setupEventListeners();
+        const inner = document.createElement('div');
+        outer.appendChild(inner);
 
-    console.log('ScrollManager initialized');
-  }
+        this.scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
 
-  /**
-   * Поиск необходимых элементов
-   */
-  findElements() {
-    this.stepElements = DOM.findAll(`[${DATA_ATTRIBUTES.STEP}]`);
-    this.anchorLinks = DOM.findAll(`a[href^="#"]`);
-  }
+        outer.parentNode.removeChild(outer);
+    }
 
-  /**
-   * Настройка слушателя скролла
-   */
-  setupScrollListener() {
-    this.handleScroll = Performance.throttle(() => {
-      this.detectScrollDirection();
-      this.handleScrollSteps();
-    }, PERFORMANCE.THROTTLE.SCROLL_MANAGER);
-
-    Events.on(window, 'scroll', this.handleScroll);
-  }
-
-  /**
-   * Настройка якорных ссылок
-   */
-  setupAnchorLinks() {
-    this.anchorLinks.forEach(link => {
-      Events.on(link, 'click', (event) => {
-        this.handleAnchorClick(event, link);
-      });
-    });
-  }
-
-  /**
-   * Настройка Intersection Observer для steps
-   */
-  setupIntersectionObserver() {
-    if (!this.stepElements.length || !('IntersectionObserver' in window)) return;
-
-    this.observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            this.activateStep(entry.target);
-          }
+    applyInitialCompensation() {
+        // Добавляем компенсирующий padding для элементов с data-lp
+        this.lpElements.forEach(element => {
+            element.style.paddingRight = this.scrollbarWidth + 'px';
         });
-      },
-      {
-        threshold: SCROLL_CONFIG.OBSERVER.THRESHOLD,
-        rootMargin: SCROLL_CONFIG.OBSERVER.ROOT_MARGIN
-      }
-    );
 
-    this.stepElements.forEach(step => {
-      this.observer.observe(step);
-    });
-  }
-
-  /**
-   * Настройка обработчиков событий
-   */
-  setupEventListeners() {
-    // Реинициализация при изменении контента
-    eventBus.on('content:changed', () => {
-      this.findElements();
-      this.setupAnchorLinks();
-      this.setupIntersectionObserver();
-    });
-
-    // Обновление при ресайзе
-    Events.on(window, 'resize', Performance.debounce(() => {
-      this.lastScrollY = window.pageYOffset;
-    }, PERFORMANCE.DEBOUNCE.RESIZE));
-  }
-
-  /**
-   * Определение направления скролла
-   */
-  detectScrollDirection() {
-    const currentScrollY = window.pageYOffset;
-    const scrollDelta = currentScrollY - this.lastScrollY;
-
-    // Игнорируем微小ые движения
-    if (Math.abs(scrollDelta) <= this.options.threshold) {
-      this.lastScrollY = currentScrollY;
-      return;
+        // Добавляем отрицательный margin для body
+        this.body.style.marginRight = '-' + this.scrollbarWidth + 'px';
     }
 
-    const newDirection = scrollDelta > 0 ? 'down' : 'up';
+    lockScroll() {
+        if (this.isLocked) return;
 
-    if (this.direction !== newDirection) {
-      this.direction = newDirection;
-      this.updateScrollClasses();
-      this.emitScrollDirectionEvent();
+        this.body.classList.add('scroll-locked');
+        
+        // Убираем отрицательный margin
+        this.body.style.marginRight = '0';
+        
+        // Добавляем компенсирующий padding для fixed элементов
+        this.lpFixedElements.forEach(element => {
+            element.style.paddingRight = this.scrollbarWidth + 'px';
+        });
+
+        this.isLocked = true;
     }
 
-    this.lastScrollY = Math.max(0, currentScrollY);
-    this.isScrolling = true;
+    unlockScroll() {
+        if (!this.isLocked) return;
 
-    // Сброс флага скролла после остановки
-    clearTimeout(this.scrollTimeout);
-    this.scrollTimeout = setTimeout(() => {
-      this.isScrolling = false;
-      this.handleNoScroll();
-    }, 100);
-  }
+        this.body.classList.remove('scroll-locked');
+        
+        // Восстанавливаем отрицательный margin
+        this.body.style.marginRight = '-' + this.scrollbarWidth + 'px';
+        
+        // Убираем компенсирующий padding с fixed элементов
+        this.lpFixedElements.forEach(element => {
+            element.style.paddingRight = '';
+        });
 
-  /**
-   * Обновление классов скролла
-   */
-  updateScrollClasses() {
-    const body = document.body;
-
-    if (this.direction === 'down') {
-      body.classList.remove(STATE_CLASSES.BODY.SCROLL_UP);
-      body.classList.add(STATE_CLASSES.BODY.SCROLL_DOWN);
-    } else {
-      body.classList.remove(STATE_CLASSES.BODY.SCROLL_DOWN);
-      body.classList.add(STATE_CLASSES.BODY.SCROLL_UP);
-    }
-  }
-
-  /**
-   * Обработка отсутствия скролла
-   */
-  handleNoScroll() {
-    const body = document.body;
-
-    if (!this.isScrolling) {
-      body.classList.remove(STATE_CLASSES.BODY.SCROLL_UP);
-      body.classList.remove(STATE_CLASSES.BODY.SCROLL_DOWN);
-    }
-  }
-
-  /**
-   * Отправка события изменения направления скролла
-   */
-  emitScrollDirectionEvent() {
-    eventBus.emit(EVENTS.SCROLL.DIRECTION_CHANGED, {
-      direction: this.direction,
-      position: window.pageYOffset,
-      timestamp: Date.now()
-    });
-  }
-
-  /**
-   * Обработка клика по якорной ссылке
-   */
-  handleAnchorClick(event, link) {
-    const href = link.getAttribute('href');
-    
-    if (href === '#' || href === '') return;
-    
-    const targetId = href.substring(1);
-    const targetElement = document.getElementById(targetId);
-    
-    if (!targetElement) return;
-    
-    event.preventDefault();
-    
-    Helpers.smoothScrollTo(targetElement, this.options.duration, this.options.offset);
-    
-    // Обновление URL без перезагрузки страницы
-    history.pushState(null, null, href);
-  }
-
-  /**
-   * Активация текущего step элемента
-   */
-  activateStep(activeStep) {
-    // Снимаем активные классы со всех steps
-    this.stepElements.forEach(step => {
-      step.classList.remove(
-        STATE_CLASSES.STEP.ACTIVE,
-        STATE_CLASSES.STEP.COMPLETED,
-        STATE_CLASSES.STEP.UPCOMING
-      );
-    });
-
-    // Добавляем класс active текущему step
-    activeStep.classList.add(STATE_CLASSES.STEP.ACTIVE);
-
-    // Добавляем классы completed и upcoming
-    let foundActive = false;
-    
-    this.stepElements.forEach(step => {
-      if (step === activeStep) {
-        foundActive = true;
-      } else if (foundActive) {
-        step.classList.add(STATE_CLASSES.STEP.UPCOMING);
-      } else {
-        step.classList.add(STATE_CLASSES.STEP.COMPLETED);
-      }
-    });
-
-    // Отправляем событие активации step
-    eventBus.emit('step:activated', {
-      element: activeStep,
-      index: Array.from(this.stepElements).indexOf(activeStep),
-      total: this.stepElements.length
-    });
-  }
-
-  /**
-   * Обработка steps при скролле (fallback для старых браузеров)
-   */
-  handleScrollSteps() {
-    if (this.observer || !this.stepElements.length) return;
-
-    const scrollPosition = window.pageYOffset + window.innerHeight * 0.3;
-
-    let activeStep = null;
-    
-    this.stepElements.forEach(step => {
-      const stepTop = step.offsetTop;
-      const stepHeight = step.offsetHeight;
-      
-      if (scrollPosition >= stepTop && scrollPosition < stepTop + stepHeight) {
-        activeStep = step;
-      }
-    });
-
-    if (activeStep) {
-      this.activateStep(activeStep);
-    }
-  }
-
-  /**
-   * Прокрутка к элементу
-   */
-  scrollToElement(element, duration = null, offset = null) {
-    const scrollDuration = duration !== null ? duration : this.options.duration;
-    const scrollOffset = offset !== null ? offset : this.options.offset;
-    
-    Helpers.smoothScrollTo(element, scrollDuration, scrollOffset);
-  }
-
-  /**
-   * Прокрутка к верхней части страницы
-   */
-  scrollToTop(duration = null) {
-    const scrollDuration = duration !== null ? duration : this.options.duration;
-    
-    Helpers.smoothScrollTo(document.body, scrollDuration, 0);
-  }
-
-  /**
-   * Получение текущей позиции скролла
-   */
-  getScrollPosition() {
-    return window.pageYOffset;
-  }
-
-  /**
-   * Получение направления скролла
-   */
-  getScrollDirection() {
-    return this.direction;
-  }
-
-  /**
-   * Обновление конфигурации
-   */
-  updateConfig(newOptions) {
-    this.options = { ...this.options, ...newOptions };
-  }
-
-  /**
-   * Деструктор
-   */
-  destroy() {
-    Events.off(window, 'scroll', this.handleScroll);
-    
-    this.anchorLinks.forEach(link => {
-      Events.off(link, 'click', this.handleAnchorClick);
-    });
-
-    if (this.observer) {
-      this.stepElements.forEach(step => {
-        this.observer.unobserve(step);
-      });
-      this.observer.disconnect();
+        this.isLocked = false;
     }
 
-    clearTimeout(this.scrollTimeout);
-
-    // Убираем добавленные классы
-    document.body.classList.remove(
-      STATE_CLASSES.BODY.SCROLL_UP,
-      STATE_CLASSES.BODY.SCROLL_DOWN
-    );
-
-    console.log('ScrollManager destroyed');
-  }
+    getScrollbarWidth() {
+        return this.scrollbarWidth;
+    }
 }
 
 export default ScrollManager;

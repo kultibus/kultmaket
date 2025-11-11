@@ -28,9 +28,12 @@ import { svgSprite } from "./gulp/tasks/svgSprite.js";
 
 function watcher() {
     gulp.watch(path.watch.files, copy);
-    gulp.watch(path.watch.html, html);
+    gulp.watch(path.watch.html, html).on(
+        "change",
+        app.plugins.browserSync.reload
+    );
     gulp.watch(path.watch.scss, scss);
-    gulp.watch(path.watch.js, js);
+    gulp.watch(path.watch.js, js).on("change", app.plugins.browserSync.reload);
     gulp.watch(path.watch.images, images);
     gulp.watch(path.watch.favicons, copyFavicons);
     gulp.watch(path.watch.svgIcons, svgSprite);
