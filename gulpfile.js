@@ -33,7 +33,7 @@ import { server } from "./gulp/tasks/server.js";
 import { scss } from "./gulp/tasks/scss.js";
 import { js } from "./gulp/tasks/js.js";
 import { images } from "./gulp/tasks/images.js";
-import { copyFonts, fonstStyle } from "./gulp/tasks/fonts.js";
+import { copyFonts, fontsStyle } from "./gulp/tasks/fonts.js";
 import { copyFavicons } from "./gulp/tasks/favicons.js";
 import { svgSprite } from "./gulp/tasks/svgSprite.js";
 
@@ -51,7 +51,7 @@ function watcher() {
 }
 
 // Последовательная обработака шрифтов
-const fonts = gulp.series(copyFonts, fonstStyle);
+const fonts = gulp.series(copyFonts, fontsStyle);
 
 const favicons = gulp.parallel(copyFavicons);
 
