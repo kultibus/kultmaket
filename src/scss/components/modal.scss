@@ -20,17 +20,6 @@
     &__overlay {
         @include overlay;
         @include flex-center;
-
-        padding: $spacing-md;
-
-        @include tablet {
-            padding: $spacing-xl;
-        }
-
-        // Состояния для анимации закрытия
-        .active & {
-            // opacity: 0;
-        }
     }
 
     &__container {
@@ -42,7 +31,7 @@
         max-width: 500px;
         max-height: 90vh;
         overflow-y: auto;
-        // animation: modalSlideIn 0.3s ease;
+        animation: modalSlideOut 0.3s ease;
 
         // Улучшение скролла для модального окна
         @include scrollbar;
@@ -52,9 +41,9 @@
         }
 
         // Состояния для анимации закрытия
-        // .active & {
-        //     animation: modalSlideOut 0.3s ease;
-        // }
+        .active & {
+            animation: modalSlideIn 0.3s ease;
+        }
     }
 
     &__close {
@@ -69,8 +58,7 @@
 
         @include hover {
             color: $color-error;
-            background: rgba($color-error, 0.1);
-            transform: rotate(90deg);
+            transform: translateY(-1px);
         }
 
         &:focus-visible {
