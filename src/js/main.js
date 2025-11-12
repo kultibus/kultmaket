@@ -4,6 +4,7 @@ import MobileMenu from "./modules/mobile-menu.js";
 import Modal from "./modules/modal.js";
 import ScrollManager from "./modules/scroll-manager.js";
 import SmoothScroll from "./modules/smooth-scroll.js";
+import HeaderScroll from "./modules/header-scroll.js";
 
 // Инициализация при загрузке DOM
 document.addEventListener("DOMContentLoaded", () => {
@@ -18,6 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Инициализация плавной прокрутки
     new SmoothScroll();
+
+    // Инициализация скролла хедера
+    new HeaderScroll();
 
     console.log("Application initialized successfully");
 });

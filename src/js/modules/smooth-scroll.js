@@ -3,7 +3,8 @@
 class SmoothScroll {
     constructor() {
         this.duration = 800;
-        this.offset = 0; // Дополнительное смещение (например, для фиксированного хедера)
+        this.offset = 0;
+        this.header = document.querySelector('header');
         this.init();
     }
 
@@ -22,17 +23,15 @@ class SmoothScroll {
             }
         });
 
-        // Пересчитываем offset при ресайзе (на случай изменения высоты хедера)
         window.addEventListener('resize', () => {
             this.calculateOffset();
         });
     }
 
     calculateOffset() {
-        // Автоматически вычисляем высоту фиксированного хедера
-        const header = document.querySelector('header');
-        if (header && window.getComputedStyle(header).position === 'fixed') {
-            this.offset = header.offsetHeight;
+        if (this.header) {
+            // Всегда используем текущую высоту хедера
+            this.offset = this.header.offsetHeight;
         }
     }
 
@@ -40,17 +39,28 @@ class SmoothScroll {
         const targetElement = document.querySelector(target);
         
         if (targetElement) {
-            const targetPosition = targetElement.getBoundingClientRect().top + 
-                                 window.pageYOffset - this.offset;
             const startPosition = window.pageYOffset;
-            const distance = targetPosition - startPosition;
             let startTime = null;
+            let lastScrollPosition = startPosition;
 
             const animation = (currentTime) => {
                 if (startTime === null) startTime = currentTime;
                 const timeElapsed = currentTime - startTime;
+                
+                // ПЕРЕСЧИТЫВАЕМ OFFSET НА КАЖДОМ КАДРЕ АНИМАЦИИ
+                this.calculateOffset();
+                
+                // Вычисляем целевую позицию с учетом текущего offset
+                const currentTargetPosition = targetElement.getBoundingClientRect().top + 
+                                           window.pageYOffset - this.offset;
+                
+                const distance = currentTargetPosition - startPosition;
                 const run = this.easeInOutQuad(timeElapsed, startPosition, distance, this.duration);
+                
                 window.scrollTo(0, run);
+                
+                // Сохраняем текущую позицию для отслеживания направления
+                const currentScrollPosition = window.pageYOffset;
                 
                 if (timeElapsed < this.duration) {
                     requestAnimationFrame(animation);
