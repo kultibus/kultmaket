@@ -18,8 +18,8 @@
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     z-index: 1000;
 
-    .scroll-down & {
-        background-color: rgba($color-white, 0.75);
+    &.scrolled {
+        // background-color: rgba($color-white, 0.7);
         box-shadow: 0 2px 20px rgba($color-primary, 0.1);
     }
 
@@ -35,10 +35,10 @@
             height: $header-height;
         }
 
-        .scroll-down & {
-            height: $header-scroll-mobile;
+        .scrolled & {
+            height: $header-height-mobile-scrolled;
             @include tablet {
-                height: $header-scroll;
+                height: $header-height-scrolled;
             }
         }
     }
@@ -129,9 +129,19 @@
         visibility: visible;
     }
 
-    .scroll-down & {
-        top: $header-scroll-mobile;
-        height: calc(100vh - $header-scroll-mobile);
+    .scrolled & {
+        top: $header-height-mobile-scrolled;
+        height: calc(100vh - $header-height-mobile-scrolled);
+
+        @include tablet {
+            top: $header-height-scrolled;
+            height: calc(100vh - $header-height-scrolled);
+        }
+
+        @include laptop {
+            top: 0;
+            height: 100%;
+        }
     }
 
     @include tablet {
@@ -150,9 +160,8 @@
     &__overlay {
         @include overlay;
         @include laptop {
-			background: none;
-			backdrop-filter: none;
-
+            background: none;
+            backdrop-filter: none;
         }
     }
 
