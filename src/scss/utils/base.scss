@@ -44,6 +44,9 @@ body {
 // Используйте will-change для параллакс элементов
 [data-parallax] {
     will-change: transform;
+    transform: translateZ(0); // Аппаратное ускорение
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
 
 .container {

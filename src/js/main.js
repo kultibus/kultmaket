@@ -1,10 +1,10 @@
 // main.js
-
 import MobileMenu from "./modules/mobile-menu.js";
 import Modal from "./modules/modal.js";
 import ScrollManager from "./modules/scroll-manager.js";
 import SmoothScroll from "./modules/smooth-scroll.js";
 import HeaderScroll from "./modules/header-scroll.js";
+import Parallax from "./modules/parallax.js"; // Добавляем импорт
 
 // Инициализация при загрузке DOM
 document.addEventListener("DOMContentLoaded", () => {
@@ -22,6 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Инициализация скролла хедера
     new HeaderScroll();
+
+    // Инициализация parallax эффекта
+    new Parallax();
 
     console.log("Application initialized successfully");
 });
