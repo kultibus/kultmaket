@@ -113,6 +113,63 @@
             border-color: $color-accent;
         }
     }
+
+    // Success message
+    &__success {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: $color-white;
+        border-radius: 12px;
+        @include flex-center;
+        z-index: 25;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+
+        &.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+}
+
+.success-message {
+    text-align: center;
+    padding: $spacing-2xl;
+    max-width: 600px;
+
+    @include tablet {
+        padding: $spacing-3xl;
+    }
+}
+
+.success-icon {
+    color: $color-success;
+    margin-bottom: $spacing-lg;
+}
+
+.success-title {
+    color: $color-primary;
+    margin-bottom: $spacing-md;
+    font-size: $font-size-2xl;
+
+    @include tablet {
+        font-size: $font-size-3xl;
+    }
+}
+
+.success-text {
+    color: $color-text-light;
+    margin-bottom: $spacing-2xl;
+    line-height: $line-height-relaxed;
+    font-size: $font-size-base;
+
+    @include tablet {
+        font-size: $font-size-lg;
+    }
 }
 
 // Анимации

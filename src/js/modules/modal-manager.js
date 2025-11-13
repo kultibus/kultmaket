@@ -1,6 +1,6 @@
 // modules/modal.js
 
-class Modal {
+class ModalManager {
     constructor(scrollManager) {
         this.modals = [];
         this.scrollManager = scrollManager;
@@ -106,4 +106,4 @@ class Modal {
     }
 }
 
-export default Modal;
+export default ModalManager;

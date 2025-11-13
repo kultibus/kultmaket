@@ -1,4 +1,4 @@
-<!-- <div class="modal" id="modal-feedback" aria-hidden="true" inert> -->
+<!-- modal-feedback.html -->
 <div class="modal" id="modal-feedback">
     <div class="modal__overlay" data-lp-fixed>
         <div
@@ -73,12 +73,36 @@
                         type="submit"
                         class="btn btn--primary btn--block"
                         data-analytics="modal-form-submit"
+                        id="modal-submit-btn"
                     >
                         Отправить запрос
                     </button>
 
                     <div class="form-message"></div>
                 </form>
+
+                <!-- Окно успешной отправки -->
+                <div class="modal__success" id="modal-success">
+                    <div class="success-message">
+                        <span
+                            class="success-icon icon icon--xl"
+                            aria-hidden="true"
+                        >
+                            <svg width="64" height="64" focusable="false">
+                                <use href="img/sprite.svg#circle-xmark"></use>
+                            </svg>
+                        </span>
+                        <h3 class="success-title">Запрос отправлен!</h3>
+                        <p class="success-text">
+                            Ваш персональный менеджер свяжется с вами в течение
+                            15 минут для бесплатной консультации и расчёта
+                            стоимости.
+                        </p>
+                        <button class="btn btn--primary" data-modal-close>
+                            Понятно
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
