@@ -9,13 +9,13 @@ import FormManager from "./modules/form-manager.js"; // Новый импорт
 
 document.addEventListener("DOMContentLoaded", () => {
     const scrollManager = new ScrollManager();
-    const modalManager = new ModalManager(scrollManager);
-    
+    const formManager = new FormManager(); // Передаем modalManager для координации
+    new ModalManager(scrollManager, formManager);
+
     new MobileMenu(scrollManager);
     new SmoothScroll();
     new HeaderScroll();
     new Parallax();
-    new FormManager(modalManager); // Передаем modalManager для координации
 
     console.log("Application initialized successfully");
 });

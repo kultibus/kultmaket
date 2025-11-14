@@ -1,7 +1,7 @@
 // modules/form-manager.js
 class FormManager {
-    constructor(modalManager) {
-        this.modalManager = modalManager;
+    constructor() {
+        this.isSubmitting = false;
         this.init();
     }
 
@@ -11,15 +11,16 @@ class FormManager {
 
     bindFormEvents() {
         // Обработка отправки формы обратной связи
-        document.addEventListener('submit', (e) => {
-            if (e.target.id === 'modal-contact-form') {
+        document.addEventListener("submit", e => {
+            if (e.target.id === "modal-contact-form") {
                 e.preventDefault();
+
                 this.handleFeedbackSubmit(e.target);
             }
         });
 
         // Сброс формы при открытии модалки
-        document.addEventListener('click', (e) => {
+        document.addEventListener("click", e => {
             if (e.target.closest('[data-target="#modal-feedback"]')) {
                 this.resetFeedbackForm();
             }
@@ -28,60 +29,78 @@ class FormManager {
 
     async handleFeedbackSubmit(form) {
         const submitBtn = form.querySelector('button[type="submit"]');
-        const success = document.getElementById('modal-success');
-        
-        this.showLoader(submitBtn);
+        const success = document.getElementById("modal-success");
+
+        this.showLoader(submitBtn, form);
+        this.handleFormElementsState(form);
 
         try {
             await this.submitFormData(form);
             this.showSuccessMessage(form, success);
         } catch (error) {
-            this.showErrorMessage(form, 'Ошибка отправки формы');
+            this.showErrorMessage(form, "Ошибка отправки формы");
         } finally {
             this.hideLoader(submitBtn);
+            this.handleFormElementsState(form);
         }
     }
 
     resetFeedbackForm() {
-        const form = document.getElementById('modal-contact-form');
-        const success = document.getElementById('modal-success');
-        
+        const form = document.getElementById("modal-contact-form");
+        const success = document.getElementById("modal-success");
+
         if (form && success) {
-            success.classList.remove('active');
-            form.style.opacity = '1';
-            form.style.pointerEvents = 'auto';
+            success.classList.remove("active");
+            form.style.opacity = "1";
+            form.style.pointerEvents = "auto";
             form.reset();
-            
+
             this.clearFormMessages(form);
         }
     }
 
+    handleFormElementsState(form) {
+        const formElements = form.querySelectorAll("[data-target-to-disable]");
+        const modal = document.querySelector(".modal.active");
+        const modalCloseBtn = modal.querySelector(".modal__close");
+
+        if (this.isSubmitting) {
+            formElements.forEach(el => (el.disabled = true));
+            modalCloseBtn.disabled = true;
+            form.classList.add("disabled");
+        } else {
+            formElements.forEach(el => (el.disabled = false));
+            modalCloseBtn.disabled = false;
+            form.classList.remove("disabled");
+        }
+    }
+
     showLoader(button) {
-        button.classList.add('btn--loading');
-        button.disabled = true;
+        button.classList.add("btn--loading");
+        this.isSubmitting = true;
     }
 
     hideLoader(button) {
-        button.classList.remove('btn--loading');
-        button.disabled = false;
+        button.classList.remove("btn--loading");
+        this.isSubmitting = false;
     }
 
     showSuccessMessage(form, successElement) {
-        successElement.classList.add('active');
-        form.style.opacity = '0.3';
-        form.style.pointerEvents = 'none';
+        successElement.classList.add("active");
+        form.style.opacity = "0.3";
+        form.style.pointerEvents = "none";
     }
 
     showErrorMessage(form, message) {
-        const messageEl = form.querySelector('.form-message');
+        const messageEl = form.querySelector(".form-message");
         messageEl.textContent = message;
-        messageEl.className = 'form-message form-message--error';
+        messageEl.className = "form-message form-message--error";
     }
 
     clearFormMessages(form) {
-        const messageEl = form.querySelector('.form-message');
-        messageEl.textContent = '';
-        messageEl.className = 'form-message';
+        const messageEl = form.querySelector(".form-message");
+        messageEl.textContent = "";
+        messageEl.className = "form-message";
     }
 
     async submitFormData(form) {
@@ -91,7 +110,7 @@ class FormManager {
                 if (this.validateForm(form) && Math.random() > 0.2) {
                     resolve({ success: true });
                 } else {
-                    reject(new Error('Network error'));
+                    reject(new Error("Network error"));
                 }
             }, 4000);
         });
@@ -108,7 +127,7 @@ class FormManager {
 
     validateForm(form) {
         // Ваша логика валидации
-        const inputs = form.querySelectorAll('[required]');
+        const inputs = form.querySelectorAll("[required]");
         let isValid = true;
 
         inputs.forEach(input => {
@@ -124,11 +143,11 @@ class FormManager {
     }
 
     markFieldInvalid(input) {
-        input.classList.add('invalid');
+        input.classList.add("invalid");
     }
 
     markFieldValid(input) {
-        input.classList.remove('invalid');
+        input.classList.remove("invalid");
     }
 }
 

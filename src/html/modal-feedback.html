@@ -14,9 +14,9 @@
                 data-target-close="#modal-feedback"
                 aria-label="Закрыть модальное окно"
             >
-                <span class="icon icon--md" aria-hidden="true">
+                <span class="icon icon--lg" aria-hidden="true">
                     <svg width="24" height="24" focusable="false">
-                        <use href="img/sprite.svg#circle-xmark"></use>
+                        <use href="img/sprite.svg#cross-small"></use>
                     </svg>
                 </span>
             </button>
@@ -39,6 +39,7 @@
                             required
                             data-validation="name"
                             class="form-input"
+                            data-target-to-disable
                         />
                         <div class="form-error" data-error="name"></div>
                     </div>
@@ -51,13 +52,19 @@
                             required
                             data-validation="phone"
                             class="form-input"
+                            data-target-to-disable
                         />
                         <div class="form-error" data-error="phone"></div>
                     </div>
 
                     <div class="form-agreement">
                         <label class="checkbox">
-                            <input type="checkbox" name="agreement" required />
+                            <input
+                                type="checkbox"
+                                name="agreement"
+                                required
+                                data-target-to-disable
+                            />
                             <span class="checkbox__checkmark"></span>
                             <span class="checkbox__text">
                                 Нажимая кнопку, вы соглашаетесь с
@@ -74,6 +81,7 @@
                         class="btn btn--primary btn--block"
                         data-analytics="modal-form-submit"
                         id="modal-submit-btn"
+                        data-target-to-disable
                     >
                         Отправить запрос
                     </button>
@@ -89,7 +97,9 @@
                             aria-hidden="true"
                         >
                             <svg width="64" height="64" focusable="false">
-                                <use href="img/sprite.svg#circle-xmark"></use>
+                                <use
+                                    href="img/sprite.svg#memo-circle-check"
+                                ></use>
                             </svg>
                         </span>
                         <h3 class="success-title">Запрос отправлен!</h3>

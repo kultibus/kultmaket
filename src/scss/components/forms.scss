@@ -10,6 +10,11 @@
 
 .form-group {
     margin-bottom: $spacing-lg;
+
+    .disabled & {
+        opacity: 0.3;
+        pointer-events: none;
+    }
 }
 
 .form-input {
@@ -46,6 +51,11 @@
 
 .form-agreement {
     margin: $spacing-xl 0;
+
+    .disabled & {
+        opacity: 0.3;
+        pointer-events: none;
+    }
 }
 
 .checkbox {
@@ -99,7 +109,7 @@
     text-decoration: underline;
 
     @include hover {
-        background-color: color.scale($color-accent, $lightness: -10%);
+        color: color.scale($color-accent, $lightness: +10%);
     }
 }
 

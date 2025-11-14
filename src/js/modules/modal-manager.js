@@ -1,8 +1,9 @@
 // modules/modal.js
 
 class ModalManager {
-    constructor(scrollManager) {
+    constructor(scrollManager, formManager) {
         this.scrollManager = scrollManager;
+        this.formManager = formManager;
         this.targetId = "";
         this.isModalOpened = false;
         this.init();
@@ -24,18 +25,25 @@ class ModalManager {
         // Close modal on close button click
         document.addEventListener("click", e => {
             const closeButton = e.target.closest("[data-target-close]");
-            if (closeButton) {
+
+            if (closeButton && !this.formManager.isSubmitting) {
                 this.closeModal(closeButton);
             }
         });
 
         // Close modal on outside click
         document.addEventListener("click", e => {
-            this.handleOutsideClick(e);
+            if (!this.formManager.isSubmitting) {
+                this.handleOutsideClick(e);
+            }
         });
 
         // Close modal on ESC
-        document.addEventListener("keydown", e => this.handleEscape(e));
+        document.addEventListener("keydown", e => {
+            if (!this.formManager.isSubmitting) {
+                this.handleEscape(e);
+            }
+        });
     }
 
     openModal(button) {
