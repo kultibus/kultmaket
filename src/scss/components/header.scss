@@ -84,6 +84,11 @@
         display: inline-flex;
         align-items: center;
         transition: all 0.3s ease;
+
+        @include hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
     }
 
     &__icon {
@@ -98,11 +103,6 @@
         @include desktop {
             width: map.get($logo-breakpoints, desktop);
         }
-    }
-
-    @include hover {
-        opacity: 0.8;
-        transform: translateY(-1px);
     }
 
     @include tablet {

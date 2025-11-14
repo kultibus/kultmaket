@@ -2,8 +2,9 @@
 
 class ModalManager {
     constructor(scrollManager) {
-        this.modals = [];
         this.scrollManager = scrollManager;
+        this.targetId = "";
+        this.isModalOpened = false;
         this.init();
     }
 
@@ -22,9 +23,9 @@ class ModalManager {
 
         // Close modal on close button click
         document.addEventListener("click", e => {
-            const closeButton = e.target.closest("[data-modal-close]");
+            const closeButton = e.target.closest("[data-target-close]");
             if (closeButton) {
-                this.closeAllModals();
+                this.closeModal(closeButton);
             }
         });
 
@@ -38,16 +39,13 @@ class ModalManager {
     }
 
     openModal(button) {
-        const targetId = button.getAttribute("data-target");
-        const modal = document.querySelector(targetId);
+        this.targetId = button.getAttribute("data-target");
+        const modal = document.querySelector(this.targetId);
 
         if (modal) {
-            // Close all other modals first
-            this.closeAllModals();
-
             // Open target modal
             modal.classList.add("active");
-            this.modals.push(modal);
+            this.isModalOpened = true;
 
             // Блокируем скролл
             if (this.scrollManager) {
@@ -56,52 +54,35 @@ class ModalManager {
         }
     }
 
-    closeAllModals() {
-        const allModals = document.querySelectorAll('[id*="modal-"]');
+    closeModal() {
+        const modal = document.querySelector(this.targetId);
 
-        allModals.forEach(modal => {
+        if (modal) {
             modal.classList.remove("active");
-        });
+            this.targetId = "";
+            this.isModalOpened = false;
 
-        this.modals = [];
-
-        // Разблокируем скролл
-        if (this.scrollManager) {
-            this.scrollManager.unlockScroll();
+            // Разблокируем скролл
+            if (this.scrollManager) {
+                this.scrollManager.unlockScroll();
+            }
         }
     }
 
     handleOutsideClick(e) {
-        // Check if click is outside any modal container
-        const modalContainers = document.querySelectorAll(
-            "[data-modal-container]"
-        );
-        let clickedOutside = true;
-
-        modalContainers.forEach(container => {
-            if (container.contains(e.target)) {
-                clickedOutside = false;
-            }
-        });
-
-        // Check if click is on close button (already handled)
-        if (e.target.closest("[data-modal-close]")) {
-            clickedOutside = false;
-        }
-
-        // Check if click is on open button (already handled)
-        if (e.target.closest("[data-target]")) {
-            clickedOutside = false;
-        }
-
-        if (clickedOutside && this.modals.length > 0) {
-            this.closeAllModals();
+        if (
+            this.isModalOpened &&
+            !e.target.closest("[data-modal-container]") &&
+            !e.target.closest("[data-modal-close]") &&
+            !e.target.closest("[data-target]")
+        ) {
+            this.closeModal();
         }
     }
 
     handleEscape(e) {
-        if (e.key === "Escape" && this.modals.length > 0) {
-            this.closeAllModals();
+        if (e.key === "Escape" && this.isModalOpened) {
+            this.closeModal();
         }
     }
 }
