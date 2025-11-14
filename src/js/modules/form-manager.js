@@ -12,11 +12,15 @@ class FormManager {
     bindFormEvents() {
         // Обработка отправки формы обратной связи
         document.addEventListener("submit", e => {
-            if (e.target.id === "modal-contact-form") {
-                e.preventDefault();
+            const forms = document.querySelectorAll(".contact-form");
 
-                this.handleFeedbackSubmit(e.target);
-            }
+            forms.forEach(form => {
+                if (e.target.id === form.id) {
+                    e.preventDefault();
+
+                    this.handleFeedbackSubmit(form);
+                }
+            });
         });
 
         // Сброс формы при открытии модалки
@@ -66,11 +70,11 @@ class FormManager {
 
         if (this.isSubmitting) {
             formElements.forEach(el => (el.disabled = true));
-            modalCloseBtn.disabled = true;
+            modalCloseBtn.disabled = modalCloseBtn ? true : false;
             form.classList.add("disabled");
         } else {
             formElements.forEach(el => (el.disabled = false));
-            modalCloseBtn.disabled = false;
+            modalCloseBtn.disabled = modalCloseBtn ? false : false;
             form.classList.remove("disabled");
         }
     }
