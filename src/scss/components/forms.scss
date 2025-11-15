@@ -65,6 +65,7 @@
     cursor: pointer;
     font-size: $font-size-sm;
     color: $color-text-light;
+    position: relative;
 }
 
 .checkbox__checkmark {
@@ -92,7 +93,10 @@
 }
 
 .checkbox input {
-    display: none;
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
 
     &:checked + .checkbox__checkmark {
         background: $color-accent;
